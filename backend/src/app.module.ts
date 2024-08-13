@@ -4,6 +4,14 @@ import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { LoggerMiddleware } from './middlewares/logger.middleware';
+import { AuthModule } from './auth/auth.module';
+
+import { UsersModule } from './modules/users/users.module';
+import { CurrencyModule } from './modules/currency/currency.module';
+import { UploadModule } from './modules/upload/upload.module';
+import { CostModule } from './modules/cost/cost.module';
+import { PlanModule } from './modules/plan/plan.module';
+
 import AppDataSource from './dataSource';
 
 @Module({
@@ -24,6 +32,12 @@ import AppDataSource from './dataSource';
       synchronize: false,
       logging: true,
     }),
+    AuthModule,
+    UsersModule,
+    CurrencyModule,
+    UploadModule,
+    CostModule,
+    PlanModule,
   ],
   controllers: [AppController],
   providers: [AppService],
