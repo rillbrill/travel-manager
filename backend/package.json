@@ -21,7 +21,15 @@
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "db:create": "cross-env NODE_ENV=development ts-node ./node_modules/typeorm-extension/bin/cli.cjs db:create -d ./src/dataSource.ts",
-    "db:drop": "cross-env NODE_ENV=development ts-node ./node_modules/typeorm-extension/bin/cli.cjs db:drop -d ./src/dataSource.ts"
+    "db:drop": "cross-env NODE_ENV=development ts-node ./node_modules/typeorm-extension/bin/cli.cjs db:drop -d ./src/dataSource.ts",
+    "seed": "ts-node ./node_modules/typeorm-extension/bin/cli.cjs seed:run -d ./dataSource.ts",
+    "seed:create": "ts-node ./node_modules/typeorm-extension/bin/cli.cjs seed:create",
+    "schema:drop": "ts-node ./node_modules/typeorm/cli.js schema:drop",
+    "schema:sync": "ts-node ./node_modules/typeorm/cli.js schema:sync",
+    "db:migrate": "npm run typeorm migration:run -- -d ./dataSource.ts",
+    "db:migrate:revert": "npm run typeorm migration:revert -- -d ./dataSource.ts",
+    "db:create-migration": "npm run typeorm migration:create -- ./src/migrations/",
+    "db:generate-migration": "npm run typeorm migration:generate -- ./src/migrations -d ./src/dataSource.ts"
   },
   "dependencies": {
     "@grpc/grpc-js": "^1.11.1",
