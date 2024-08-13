@@ -1,0 +1,61 @@
+# --- Backend gitignore ---
+
+# 컴파일된 출력물
+/backend/dist
+/backend/build
+
+# 의존성 모듈
+node_modules
+
+# 로그 파일
+logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# 운영체제 관련 파일
+.DS_Store
+
+# 테스트 관련 파일
+/backend/coverage
+/backend/.nyc_output
+
+# IDE 및 에디터 관련 파일
+.idea
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+
+# VSCode 관련 파일
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# 환경 변수 파일
+*.env
+.env.production.local
+.env.local
+
+# 임시 디렉토리
+.temp
+.tmp
+
+# 런타임 데이터
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# 진단 보고서
+report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
+
+# 백엔드 특정 파일
+/backend/dist/
