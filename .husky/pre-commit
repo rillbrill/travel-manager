@@ -1,8 +1,0 @@
-# https://stackoverflow.com/questions/74129312/how-to-configure-husky-when-git-is-in-a-different-folder
-# https://github.com/typicode/husky/releases/tag/v9.0.1
-
-# deprecated
-#!/bin/sh
-# . "$(dirname "$0")/_/husky.sh"
-
-yarn lint-staged
