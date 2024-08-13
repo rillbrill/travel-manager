@@ -1,0 +1,5 @@
+# https://stackoverflow.com/questions/74129312/how-to-configure-husky-when-git-is-in-a-different-folder
+#!/bin/sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+yarn lint-staged
