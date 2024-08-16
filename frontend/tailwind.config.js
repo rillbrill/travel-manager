@@ -38,6 +38,9 @@ export default {
           900: 'var(--gray-900)',
         },
       },
+      boxShadow: {
+        container: '0px 0px 16px rgb(50 50 50 / 12%)',
+      },
     },
   },
   plugins: [

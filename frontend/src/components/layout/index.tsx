@@ -10,7 +10,7 @@ function Layout({ children }: Props) {
   return (
     <div className="layout">
       <LogoSection />
-      <div className="container">{children}</div>
+      <div className="container shadow-container">{children}</div>
     </div>
   )
 }
