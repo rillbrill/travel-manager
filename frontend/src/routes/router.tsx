@@ -13,6 +13,7 @@ import { routes } from '.'
 
 const router = createBrowserRouter([
   {
+    path: '/',
     element: (
       <Layout>
         <Outlet />
@@ -25,7 +26,7 @@ const router = createBrowserRouter([
         element: <LoginPage />,
       },
       {
-        path: routes.home,
+        path: routes.plans,
         element: <PlanListPage />,
       },
       {
