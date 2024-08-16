@@ -40,6 +40,7 @@ export default {
       },
       boxShadow: {
         container: '0px 0px 16px rgb(50 50 50 / 12%)',
+        bottom: '0px 0px 16px 0px rgb(50 50 50 / 12%)',
       },
     },
   },
