@@ -1,34 +1,48 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Query, Res } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { CreateAuthDto } from './dto/create-auth.dto';
-import { UpdateAuthDto } from './dto/update-auth.dto';
+import { ConfigService } from '@nestjs/config';
+import { Response } from 'express';
 
-@Controller('auth')
+@Controller('api/auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly configService: ConfigService,
+    private readonly authService: AuthService,
+  ) {}
 
-  @Post()
-  create(@Body() createAuthDto: CreateAuthDto) {
-    return this.authService.create(createAuthDto);
+  @Get('kakao/login')
+  async kakaoLogin(@Res() res: Response) {
+    const clientId = this.configService.get('KAKAO_CLIENT_ID');
+    const redirectUri = encodeURIComponent(
+      this.configService.get('KAKAO_REDIRECT_URI'),
+    );
+    const kakaoAuthUrl = `https://kauth.kakao.com/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=code`;
+    res.redirect(kakaoAuthUrl);
   }
 
-  @Get()
-  findAll() {
-    return this.authService.findAll();
-  }
+  @Get('kakao')
+  async kakaoCallback(@Query('code') code: string) {
+    try {
+      const tokenData = await this.authService.getKakaoToken(code);
+      const userInfo = await this.authService.getKakaoUserInfo(
+        tokenData.access_token,
+      );
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.authService.findOne(+id);
-  }
+      const user = await this.authService.findOrCreateUser(userInfo);
+      const tokens = await this.authService.createTokens(user);
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateAuthDto: UpdateAuthDto) {
-    return this.authService.update(+id, updateAuthDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.authService.remove(+id);
+      return {
+        message: '카카오 로그인 성공',
+        user: {
+          id: user.id,
+          nickname: user.nickname,
+          email: user.email,
+        },
+        ...tokens,
+      };
+    } catch (error) {
+      console.error('카카오 로그인 에러 발생:', error);
+      return { message: '카카오 로그인 실패', error: error.message };
+    }
   }
 }
