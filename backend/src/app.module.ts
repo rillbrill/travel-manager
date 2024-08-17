@@ -1,8 +1,8 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { JwtModule } from '@nestjs/jwt';
 import { LoggerMiddleware } from './middlewares/logger.middleware';
 import { AuthModule } from './auth/auth.module';
 
@@ -12,7 +12,8 @@ import { UploadModule } from './modules/upload/upload.module';
 import { CostModule } from './modules/cost/cost.module';
 import { PlanModule } from './modules/plan/plan.module';
 
-import AppDataSource from './dataSource';
+import { Users } from './entities/users.entity';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
@@ -27,10 +28,18 @@ import AppDataSource from './dataSource';
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_DATABASE,
-      entities: [__dirname + '/**/*.entity.{js,ts}'],
+      entities: [Users],
       charset: 'utf8mb4_general_ci',
-      synchronize: false,
+      synchronize: true,
       logging: true,
+      migrations: [__dirname + '/migrations/**/*{.ts,.js}'],
+    }),
+    JwtModule.register({
+      global: true,
+      secret: process.env.JWT_ACCESS_SECRET,
+      signOptions: {
+        expiresIn: process.env.JWT_ACCESS_EXPIRATION,
+      },
     }),
     AuthModule,
     UsersModule,
