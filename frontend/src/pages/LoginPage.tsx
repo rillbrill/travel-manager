@@ -1,5 +1,19 @@
+import kakaoLoginImage from '../assets/images/kakao_login_medium_narrow.png'
+
 function KakaoSocoalButton() {
-  return <button>카카오 로그인</button>
+  const restApiKey = import.meta.env.VITE_KAKAO_CLIENT_ID
+  const redirectUri = import.meta.env.VITE_KAKAO_REDIRECT_URI
+  const kakaoUrl = `https://kauth.kakao.com/oauth/authorize?client_id=${restApiKey}&redirect_uri=${redirectUri}&response_type=code`
+
+  function clickHandler() {
+    window.location.href = kakaoUrl
+  }
+
+  return (
+    <button onClick={clickHandler}>
+      <img src={kakaoLoginImage} alt="카카오 로그인 버튼" />
+    </button>
+  )
 }
 
 function LoginPage() {
