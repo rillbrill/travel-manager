@@ -14,8 +14,11 @@ export class AuthController {
   async kakaoLogin(@Res() res: Response) {
     const clientId = this.configService.get('KAKAO_CLIENT_ID');
     const redirectUri = encodeURIComponent(
-      this.configService.get('KAKAO_REDIRECT_URI'),
+      this.configService.get('KAKAO_FE_REDIRECT_URI'),
     );
+    // const redirectUri = encodeURIComponent(
+    //   this.configService.get('KAKAO_REDIRECT_URI'),
+    // );
     const kakaoAuthUrl = `https://kauth.kakao.com/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=code`;
     res.redirect(kakaoAuthUrl);
   }
