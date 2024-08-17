@@ -3,6 +3,7 @@ import { createBrowserRouter, Outlet } from 'react-router-dom'
 import Layout from '@/components/layout'
 import {
   AddPlanPage,
+  KakaoLoginPage,
   LoginPage,
   NotFoundPage,
   PlanDetailPage,
@@ -36,6 +37,10 @@ const router = createBrowserRouter([
       {
         path: routes.plan,
         element: <PlanDetailPage />,
+      },
+      {
+        path: routes.kakaoLogin,
+        element: <KakaoLoginPage />,
       },
     ],
   },
