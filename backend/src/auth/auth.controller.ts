@@ -23,10 +23,7 @@ import { AuthGuard } from '@nestjs/passport';
 @ApiTags('인증')
 @Controller('api/auth')
 export class AuthController {
-  constructor(
-    private readonly configService: ConfigService,
-    private readonly authService: AuthService,
-  ) {}
+  constructor(private readonly authService: AuthService) {}
 
   @ApiOperation({
     summary: '카카오 로그인',

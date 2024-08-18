@@ -1,94 +1,100 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { HttpService } from '@nestjs/axios';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Users } from 'src/entities/users.entity';
 import { JwtService } from '@nestjs/jwt';
-import { UserType } from './model/user.type';
 import bcrypt from 'bcrypt';
+import { UserType } from './model/auth.types';
+import {
+  CreateUserDto,
+  KakaoLoginResponseDto,
+  KakaoUserInfoDto,
+  UpdateUserDto,
+  UserDto,
+} from './dto/auth.dto';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly configService: ConfigService,
-    private readonly httpService: HttpService,
     @InjectRepository(Users)
     private readonly userRepository: Repository<Users>,
     private readonly jwtService: JwtService,
   ) {}
 
   // 카카오 로그인 이후 처리
-  async loginWithKakao(kakaoUserInfo: any) {
-    console.log('Kakao user info:', JSON.stringify(kakaoUserInfo, null, 2));
-
+  async loginWithKakao(
+    kakaoUserInfo: KakaoUserInfoDto,
+  ): Promise<KakaoLoginResponseDto> {
     const { kakaoId, nickname, email, profileImage } = kakaoUserInfo;
     if (!kakaoId) {
       throw new UnauthorizedException('카카오 ID를 찾을 수 없습니다.');
     }
 
-    let user = await this.findOrCreateUser(
-      kakaoId.toString(),
-      UserType.KAKAO,
+    let user = await this.findOrCreateUser({
+      socialId: kakaoId.toString(),
+      type: UserType.KAKAO,
       nickname,
       email,
       profileImage,
-    );
+    });
 
     const accessToken = this.generateAccessToken(user);
     const { refreshToken, hashedRefreshToken } =
       await this.generateRefreshToken(user);
 
-    await this.saveRefreshToken(user.id, hashedRefreshToken);
+    await this.updateUser(user.id, { refreshToken: hashedRefreshToken });
 
-    return { user, accessToken, refreshToken };
+    return { user: this.toUserDto(user), accessToken, refreshToken };
   }
 
   // DB에 사용자 정보 저장 또는 업데이트
-  async findOrCreateUser(
-    socialId: string,
-    type: UserType,
-    nickname?: string,
-    email?: string,
-    profileImage?: string,
-  ) {
+  async findOrCreateUser(createUserDto: CreateUserDto): Promise<Users> {
     let user = await this.userRepository.findOne({
-      where: { socialId, type },
+      where: { socialId: createUserDto.socialId, type: createUserDto.type },
     });
 
     if (!user) {
-      user = this.userRepository.create({
-        socialId,
-        nickname,
-        email,
-        profileImage,
-        type,
-      });
+      user = this.userRepository.create(createUserDto);
     } else {
-      user.nickname = nickname || user.nickname;
-      user.email = email || user.email;
-      user.profileImage = profileImage || user.profileImage;
+      user = this.userRepository.merge(user, createUserDto);
     }
 
-    await this.userRepository.save(user);
-    return user;
+    return this.userRepository.save(user);
+  }
+
+  // 사용자 정보 업데이트
+  async updateUser(
+    userId: number,
+    updateUserDto: UpdateUserDto,
+  ): Promise<Users> {
+    await this.userRepository.update(userId, updateUserDto);
+    return this.userRepository.findOne({ where: { id: userId } });
   }
 
   // 액세스 토큰 생성
-  generateAccessToken(user: Users) {
+  generateAccessToken(user: Users): string {
     const payload = { sub: user.id };
     return this.jwtService.sign(payload, {
-      secret: this.configService.get('JWT_ACCESS_SECRET'),
-      expiresIn: this.configService.get('JWT_ACCESS_EXPIRATION'),
+      secret: this.configService.get<string>('JWT_ACCESS_SECRET'),
+      expiresIn: this.configService.get<string>('JWT_ACCESS_EXPIRATION'),
     });
   }
 
   // 리프레시 토큰 생성 및 암호화
-  async generateRefreshToken(user: Users) {
+  async generateRefreshToken(user: Users): Promise<{
+    refreshToken: string;
+    hashedRefreshToken: string;
+  }> {
     const payload = { sub: user.id };
     const refreshToken = this.jwtService.sign(payload, {
-      secret: this.configService.get('JWT_REFRESH_SECRET'),
-      expiresIn: this.configService.get('JWT_REFRESH_EXPIRATION'),
+      secret: this.configService.get<string>('JWT_REFRESH_SECRET'),
+      expiresIn: this.configService.get<string>('JWT_REFRESH_EXPIRATION'),
     });
 
     const hashedRefreshToken = await bcrypt.hash(refreshToken, 10);
@@ -96,7 +102,10 @@ export class AuthService {
   }
 
   // DB에 암호화된 리프레시 토큰 저장
-  async saveRefreshToken(userId: number, hashedRefreshToken: string) {
+  async saveRefreshToken(
+    userId: number,
+    hashedRefreshToken: string,
+  ): Promise<void> {
     await this.userRepository.update(userId, {
       refreshToken: hashedRefreshToken,
     });
@@ -106,7 +115,7 @@ export class AuthService {
   async validateRefreshToken(refreshToken: string): Promise<Users> {
     try {
       const payload = this.jwtService.verify(refreshToken, {
-        secret: this.configService.get('JWT_REFRESH_SECRET'),
+        secret: this.configService.get<string>('JWT_REFRESH_SECRET'),
       });
       const user = await this.userRepository.findOne({
         where: { id: payload.sub },
@@ -130,11 +139,14 @@ export class AuthService {
   }
 
   // 토큰 유효성 검사
-  async validateToken(token: string, isAccessToken: boolean = true) {
+  async validateToken(
+    token: string,
+    isAccessToken: boolean = true,
+  ): Promise<Users> {
     try {
       const secret = isAccessToken
-        ? this.configService.get('JWT_ACCESS_SECRET')
-        : this.configService.get('JWT_REFRESH_SECRET');
+        ? this.configService.get<string>('JWT_ACCESS_SECRET')
+        : this.configService.get<string>('JWT_REFRESH_SECRET');
 
       const payload = this.jwtService.verify(token, { secret });
       const user = await this.userRepository.findOne({
@@ -144,7 +156,6 @@ export class AuthService {
       if (!user) {
         throw new UnauthorizedException('사용자를 찾을 수 없습니다.');
       }
-
       return user;
     } catch (error) {
       if (error.name === 'TokenExpiredError') {
@@ -155,7 +166,9 @@ export class AuthService {
   }
 
   // 액세스 토큰 갱신
-  async refreshAccessToken(refreshToken: string) {
+  async refreshAccessToken(refreshToken: string): Promise<{
+    accessToken: string;
+  }> {
     const user = await this.validateRefreshToken(refreshToken);
     if (!user) {
       throw new UnauthorizedException('유효하지 않은 리프레시 토큰입니다.');
@@ -165,24 +178,22 @@ export class AuthService {
     return { accessToken };
   }
 
-  // 유저 정보 조회
-  async getProfile(userId: number) {
+  // 사용자 프로필 조회
+  async getProfile(userId: number): Promise<UserDto> {
     const user = await this.userRepository.findOne({ where: { id: userId } });
     if (!user) {
-      throw new UnauthorizedException('사용자를 찾을 수 없습니다.');
+      throw new NotFoundException('사용자를 찾을 수 없습니다.');
     }
-    return {
-      id: user.id,
-      socialId: user.socialId,
-      email: user.email,
-      nickname: user.nickname,
-      profileImage: user.profileImage,
-      type: user.type,
-    };
+    return this.toUserDto(user);
+  }
+
+  private toUserDto(user: Users): UserDto {
+    const { refreshToken, ...userWithoutRefreshToken } = user;
+    return userWithoutRefreshToken;
   }
 
   // 로그아웃 시 리프레시 토큰 삭제
   async removeRefreshTokenOnLogout(userId: number) {
-    await this.userRepository.update(userId, { refreshToken: null });
+    await this.updateUser(userId, { refreshToken: null });
   }
 }

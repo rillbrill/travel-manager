@@ -1,4 +1,4 @@
-import { UserType } from '../auth/model/user.type';
+import { UserType } from 'src/auth/model/auth.types';
 import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
