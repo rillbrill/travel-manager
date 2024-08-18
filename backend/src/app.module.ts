@@ -14,6 +14,7 @@ import { PlanModule } from './modules/plan/plan.module';
 
 import { Users } from './entities/users.entity';
 import { ConfigModule } from '@nestjs/config';
+import { HttpModule } from '@nestjs/axios';
 
 @Module({
   imports: [
@@ -40,6 +41,10 @@ import { ConfigModule } from '@nestjs/config';
       signOptions: {
         expiresIn: process.env.JWT_ACCESS_EXPIRATION,
       },
+    }),
+    HttpModule.register({
+      timeout: 5000,
+      maxRedirects: 5,
     }),
     AuthModule,
     UsersModule,
