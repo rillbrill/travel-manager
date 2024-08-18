@@ -1,6 +1,6 @@
 import kakaoLoginImage from '../assets/images/kakao_login_medium_narrow.png'
 
-function KakaoSocoalButton() {
+function KakaoSocialButton() {
   const restApiKey = import.meta.env.VITE_KAKAO_CLIENT_ID
   const redirectUri = import.meta.env.VITE_KAKAO_FE_REDIRECT_URI
   const kakaoUrl = `https://kauth.kakao.com/oauth/authorize?client_id=${restApiKey}&redirect_uri=${redirectUri}&response_type=code`
@@ -25,7 +25,7 @@ function LoginPage() {
         </h1>
       </div>
       <div>
-        <KakaoSocoalButton />
+        <KakaoSocialButton />
       </div>
     </section>
   )
