@@ -1,8 +1,9 @@
-import { Controller, Get, Query, Res } from '@nestjs/common';
+import { Controller, Get, Req, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { ConfigService } from '@nestjs/config';
-import { Response } from 'express';
-import { ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { JwtAuthGuard } from './jwt-auth.guard';
+import { AuthGuard } from '@nestjs/passport';
 
 @ApiTags('Auth')
 @Controller('api/auth')
@@ -13,60 +14,48 @@ export class AuthController {
   ) {}
 
   @ApiOperation({
-    summary: '카카오 로그인 리디렉션',
-  })
-  @ApiResponse({
-    status: 302,
-    description: '카카오 로그인 페이지 리디렉트됨',
-  })
-  @Get('kakao/login')
-  async kakaoLogin(@Res() res: Response) {
-    const clientId = this.configService.get('KAKAO_CLIENT_ID');
-    const redirectUri = encodeURIComponent(
-      this.configService.get('KAKAO_REDIRECT_URI'),
-    );
-    const kakaoAuthUrl = `https://kauth.kakao.com/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=code`;
-    res.redirect(kakaoAuthUrl);
-  }
-
-  @ApiOperation({
-    summary: '카카오 로그인 후 사용자 정보 반환',
-  })
-  @ApiQuery({
-    name: 'code',
-    description: '카카오가 반환한 인증 코드',
+    summary: '카카오 로그인 후 사용자 정보 및 JWT 토큰 반환',
   })
   @ApiResponse({
     status: 200,
-    description: '카카오 로그인 성공',
+    description: '카카오 로그인 성공 및 사용자 정보, JWT 토큰 반환',
   })
   @ApiResponse({
     status: 400,
     description: '카카오 로그인 실패',
   })
   @Get('kakao')
-  async kakaoCallback(@Query('code') code: string) {
+  @UseGuards(AuthGuard('kakao'))
+  async kakaoCallback(@Req() req) {
     try {
-      const tokenData = await this.authService.getKakaoToken(code);
-      const userInfo = await this.authService.getKakaoUserInfo(
-        tokenData.access_token,
-      );
-
-      const user = await this.authService.findOrCreateUser(userInfo);
-      const tokens = await this.authService.createTokens(user);
+      const { user, accessToken, refreshToken } =
+        await this.authService.loginWithKakao(req.user);
 
       return {
         message: '카카오 로그인 성공',
         user: {
           id: user.id,
-          nickname: user.nickname,
+          socialId: user.socialId,
           email: user.email,
+          nickname: user.nickname,
+          profileImage: user.profileImage,
+          type: user.type,
         },
-        ...tokens,
+        accessToken,
+        refreshToken,
       };
     } catch (error) {
       console.error('카카오 로그인 에러 발생:', error);
       return { message: '카카오 로그인 실패', error: error.message };
     }
+  }
+
+  @ApiOperation({ summary: '인증된 사용자의 프로필 정보 조회' })
+  @ApiResponse({ status: 200, description: '사용자 프로필 정보' })
+  @ApiResponse({ status: 401, description: '인증되지 않은 요청' })
+  @Get('profile')
+  @UseGuards(AuthGuard('jwt'))
+  async getProfile(@Req() req) {
+    return this.authService.getProfile(req.user.id);
   }
 }
