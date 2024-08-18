@@ -14,8 +14,8 @@ const dataSource = new DataSource({
   entities: [__dirname + '/**/*.entity.{js,ts}'],
   migrations: [resolve(__dirname, 'migrations/*.ts')],
   charset: 'utf8mb4_general_ci',
-  synchronize: false,
-  logging: true,
+  synchronize: process.env.NODE_ENV === 'development',
+  logging: process.env.NODE_ENV === 'development',
 });
 
 export default dataSource;

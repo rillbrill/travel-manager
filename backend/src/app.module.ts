@@ -30,8 +30,8 @@ import { ConfigModule } from '@nestjs/config';
       database: process.env.DB_DATABASE,
       entities: [Users],
       charset: 'utf8mb4_general_ci',
-      synchronize: true,
-      logging: true,
+      synchronize: process.env.NODE_ENV === 'development',
+      logging: process.env.NODE_ENV === 'development',
       migrations: [__dirname + '/migrations/**/*{.ts,.js}'],
     }),
     JwtModule.register({
