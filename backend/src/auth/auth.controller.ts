@@ -1,11 +1,26 @@
-import { Controller, Get, Req, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  Req,
+  UseGuards,
+  HttpStatus,
+  HttpCode,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { ConfigService } from '@nestjs/config';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { JwtAuthGuard } from './jwt-auth.guard';
+import {
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+  ApiBody,
+  ApiBearerAuth,
+} from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
 
-@ApiTags('Auth')
+@ApiTags('인증')
 @Controller('api/auth')
 export class AuthController {
   constructor(
@@ -14,24 +29,49 @@ export class AuthController {
   ) {}
 
   @ApiOperation({
-    summary: '카카오 로그인 후 사용자 정보 및 JWT 토큰 반환',
+    summary: '카카오 로그인',
+    description: '카카오 로그인 후 사용자 정보 및 JWT 토큰을 반환합니다.',
   })
   @ApiResponse({
-    status: 200,
-    description: '카카오 로그인 성공 및 사용자 정보, JWT 토큰 반환',
+    status: HttpStatus.OK,
+    description: '카카오 로그인 성공',
+    schema: {
+      example: {
+        statusCode: 200,
+        message: '카카오 로그인 성공',
+        user: {
+          id: 1,
+          socialId: '12345678',
+          email: 'user@example.com',
+          nickname: '홍길동',
+          profileImage: 'https://example.com/profile.jpg',
+          type: 'kakao',
+        },
+        accessToken: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...',
+        refreshToken: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...',
+      },
+    },
   })
   @ApiResponse({
-    status: 400,
+    status: HttpStatus.BAD_REQUEST,
     description: '카카오 로그인 실패',
+    schema: {
+      example: {
+        message: '카카오 로그인 실패',
+        error: '유효하지 않은 카카오 토큰입니다.',
+      },
+    },
   })
   @Get('kakao')
   @UseGuards(AuthGuard('kakao'))
+  @HttpCode(HttpStatus.OK)
   async kakaoCallback(@Req() req) {
     try {
       const { user, accessToken, refreshToken } =
         await this.authService.loginWithKakao(req.user);
 
       return {
+        statusCode: HttpStatus.OK,
         message: '카카오 로그인 성공',
         user: {
           id: user.id,
@@ -46,16 +86,120 @@ export class AuthController {
       };
     } catch (error) {
       console.error('카카오 로그인 에러 발생:', error);
-      return { message: '카카오 로그인 실패', error: error.message };
+      return {
+        message: '카카오 로그인 실패',
+        error: error.message,
+      };
     }
   }
 
-  @ApiOperation({ summary: '인증된 사용자의 프로필 정보 조회' })
-  @ApiResponse({ status: 200, description: '사용자 프로필 정보' })
-  @ApiResponse({ status: 401, description: '인증되지 않은 요청' })
+  @ApiOperation({
+    summary: '사용자 프로필 조회',
+    description: '인증된 사용자의 프로필 정보를 조회합니다.',
+  })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: '사용자 프로필 정보',
+    schema: {
+      example: {
+        id: 1,
+        socialId: '12345678',
+        email: 'user@example.com',
+        nickname: '홍길동',
+        profileImage: 'https://example.com/profile.jpg',
+        type: 'kakao',
+      },
+    },
+  })
+  @ApiBearerAuth()
   @Get('profile')
   @UseGuards(AuthGuard('jwt'))
+  @HttpCode(HttpStatus.OK)
   async getProfile(@Req() req) {
-    return this.authService.getProfile(req.user.id);
+    const profile = await this.authService.getProfile(req.user.id);
+    return {
+      ...profile,
+    };
+  }
+
+  @ApiOperation({
+    summary: '사용자 로그아웃',
+    description: '리프레시 토큰을 삭제하여 로그아웃 처리합니다.',
+  })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: '로그아웃 성공',
+    schema: {
+      example: {
+        message: '로그아웃 성공',
+      },
+    },
+  })
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        userId: { type: 'number', example: 1 },
+      },
+    },
+  })
+  @Post('logout')
+  @HttpCode(HttpStatus.OK)
+  async logout(@Body() body: { userId: number }) {
+    await this.authService.removeRefreshTokenOnLogout(body.userId);
+    return {
+      message: '로그아웃 성공',
+    };
+  }
+
+  @ApiOperation({
+    summary: '액세스 토큰 재발급',
+    description: '리프레시 토큰을 사용하여 새로운 액세스 토큰을 발급합니다.',
+  })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: '액세스 토큰 갱신 성공',
+    schema: {
+      example: {
+        accessToken: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...',
+      },
+    },
+  })
+  @ApiResponse({
+    status: HttpStatus.UNAUTHORIZED,
+    description: '유효하지 않은 리프레시 토큰',
+    schema: {
+      example: {
+        message: '유효하지 않은 리프레시 토큰입니다.',
+        error: 'Unauthorized',
+        statusCode: 401,
+      },
+    },
+  })
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        refreshToken: {
+          type: 'string',
+          example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...',
+        },
+      },
+    },
+  })
+  @Post('refresh')
+  @HttpCode(HttpStatus.OK)
+  async refreshTokens(@Body() body: { refreshToken: string }) {
+    try {
+      const { refreshToken } = body;
+      if (!refreshToken) {
+        throw new UnauthorizedException('리프레시 토큰이 제공되지 않았습니다.');
+      }
+      const { accessToken } =
+        await this.authService.refreshAccessToken(refreshToken);
+      return { accessToken };
+    } catch (error) {
+      throw new UnauthorizedException('유효하지 않은 리프레시 토큰입니다.');
+    }
   }
 }

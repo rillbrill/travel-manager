@@ -23,12 +23,14 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     try {
       const user = await this.authService.getProfile(payload.sub);
       if (!user) {
-        this.logger.warn(`User not found for id: ${payload.sub}`);
+        this.logger.warn(
+          `ID: ${payload.sub}에 해당하는 사용자를 찾을 수 없습니다.`,
+        );
         throw new UnauthorizedException('사용자를 찾을 수 없습니다.');
       }
       return user;
     } catch (error) {
-      this.logger.error(`Error validating token: ${error.message}`);
+      this.logger.error(`토큰 검증 오류: ${error.message}`);
       throw new UnauthorizedException('유효하지 않은 토큰입니다.');
     }
   }

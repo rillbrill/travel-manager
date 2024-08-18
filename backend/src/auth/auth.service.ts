@@ -103,26 +103,62 @@ export class AuthService {
   }
 
   // 리프레시 토큰 검증
-  async validateRefreshToken(
-    userId: number,
-    refreshToken: string,
-  ): Promise<boolean> {
-    const user = await this.userRepository.findOne({ where: { id: userId } });
-    if (!user || !user.refreshToken) {
-      return false;
+  async validateRefreshToken(refreshToken: string): Promise<Users> {
+    try {
+      const payload = this.jwtService.verify(refreshToken, {
+        secret: this.configService.get('JWT_REFRESH_SECRET'),
+      });
+      const user = await this.userRepository.findOne({
+        where: { id: payload.sub },
+      });
+      if (!user || !user.refreshToken) {
+        throw new UnauthorizedException('유효하지 않은 리프레시 토큰입니다.');
+      }
+      const isRefreshTokenValid = await bcrypt.compare(
+        refreshToken,
+        user.refreshToken,
+      );
+      if (!isRefreshTokenValid) {
+        throw new UnauthorizedException('유효하지 않은 리프레시 토큰입니다.');
+      }
+      return user;
+    } catch (error) {
+      throw new UnauthorizedException(
+        '리프레시 토큰 검증 중 오류가 발생했습니다.',
+      );
     }
-    return bcrypt.compare(refreshToken, user.refreshToken);
+  }
+
+  // 토큰 유효성 검사
+  async validateToken(token: string, isAccessToken: boolean = true) {
+    try {
+      const secret = isAccessToken
+        ? this.configService.get('JWT_ACCESS_SECRET')
+        : this.configService.get('JWT_REFRESH_SECRET');
+
+      const payload = this.jwtService.verify(token, { secret });
+      const user = await this.userRepository.findOne({
+        where: { id: payload.sub },
+      });
+
+      if (!user) {
+        throw new UnauthorizedException('사용자를 찾을 수 없습니다.');
+      }
+
+      return user;
+    } catch (error) {
+      if (error.name === 'TokenExpiredError') {
+        throw new UnauthorizedException('토큰이 만료되었습니다.');
+      }
+      throw new UnauthorizedException('유효하지 않은 토큰입니다.');
+    }
   }
 
   // 액세스 토큰 갱신
-  async refreshAccessToken(userId: number, refreshToken: string) {
-    if (!this.validateRefreshToken(userId, refreshToken)) {
-      throw new UnauthorizedException('리프레시 토큰이 유효하지 않습니다.');
-    }
-
-    const user = await this.userRepository.findOne({ where: { id: userId } });
+  async refreshAccessToken(refreshToken: string) {
+    const user = await this.validateRefreshToken(refreshToken);
     if (!user) {
-      throw new UnauthorizedException('사용자를 찾을 수 없습니다.');
+      throw new UnauthorizedException('유효하지 않은 리프레시 토큰입니다.');
     }
 
     const accessToken = this.generateAccessToken(user);
@@ -143,5 +179,10 @@ export class AuthService {
       profileImage: user.profileImage,
       type: user.type,
     };
+  }
+
+  // 로그아웃 시 리프레시 토큰 삭제
+  async removeRefreshTokenOnLogout(userId: number) {
+    await this.userRepository.update(userId, { refreshToken: null });
   }
 }
