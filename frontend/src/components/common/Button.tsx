@@ -4,20 +4,36 @@ import { cn } from '@/utils/cn'
 
 type Props = {
   children: React.ReactNode
+  shape?: 'button' | 'input'
+  label?: string
+  isFull?: boolean
 } & HTMLAttributes<HTMLButtonElement>
 
-function Button({ children, className, ...props }: Props) {
+function Button({
+  children,
+  shape = 'button',
+  label,
+  className,
+  isFull = true,
+  ...props
+}: Props) {
+  const hasLabel = !!label
+
   return (
-    <button
-      className={cn([
-        'w-full rounded-lg bg-blue-500 p-3 text-white',
-        'flex items-center justify-center gap-x-2',
-        className,
-      ])}
-      {...props}
-    >
-      {children}
-    </button>
+    <div className={cn(['flex flex-col gap-y-2', isFull ? 'w-full' : 'w-fit'])}>
+      {hasLabel && <span className="text-sm text-gray-500">{label}</span>}
+      <button
+        className={cn([
+          shape === 'input'
+            ? 'w-full rounded-lg border border-gray-300 bg-white px-2 py-3 text-gray-400'
+            : 'flex w-full items-center justify-center gap-x-2 rounded-lg bg-blue-500 p-3 text-white',
+          className,
+        ])}
+        {...props}
+      >
+        {children}
+      </button>
+    </div>
   )
 }
 
