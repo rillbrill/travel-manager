@@ -1,7 +1,6 @@
 import React from 'react'
 import { FiCheck } from 'react-icons/fi'
 
-import { AddPlanStepEnum } from '@/types'
 import { cn } from '@/utils/cn'
 
 type Props = {
@@ -27,7 +26,7 @@ function StepperItem({ icon, step, isCurrentStep, isDoneStep }: Props) {
       </div>
       <p
         className={cn([
-          'text-sm',
+          'text-xs md:text-sm',
           isCurrentStep || isDoneStep ? 'text-blue-500' : 'text-gray-500',
         ])}
       >
