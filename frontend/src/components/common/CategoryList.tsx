@@ -1,41 +1,39 @@
+type Props = {
+  name: string
+  color: string
+}
+
 type CategoryType = {
   name: string
   color: string
 }
 
-type Props = {
-  category: CategoryType
+const CategoryItemButton = ({ name, color }: Props) => {
+  const categoryItemStyleClass = `mx-1 rounded-lg px-2 py-2 font-sans text-xs bg-${color}`
+
+  return <button className={categoryItemStyleClass}>{name}</button>
 }
 
-const CategoryButton = ({ category }: Props) => {
-  const { name, color } = category
-
-  return (
-    <button
-      className="mx-1 rounded-lg px-2 py-2 font-sans text-xs"
-      style={{ backgroundColor: color }}
-    >
-      {name}
-    </button>
-  )
-}
+const categories: CategoryType[] = [
+  { name: '활동', color: 'blue-300' },
+  { name: '숙소', color: 'violet-300' },
+  { name: '아침', color: 'teal-300' },
+  { name: '점심', color: 'yellow-200' },
+  { name: '저녁', color: 'indigo-300' },
+  { name: '카페', color: 'stone-400' },
+]
 
 const CategoryList = () => {
-  const categories: CategoryType[] = [
-    { name: '활동', color: '#A9C6F1' },
-    { name: '숙소', color: '#90BA8A' },
-    { name: '아침', color: '#A3D4CC' },
-    { name: '점심', color: '#FEE2E2' },
-    { name: '저녁', color: '#FEF08A' },
-    { name: '카페', color: '#D9D9D9' },
-  ]
-
   return (
-    <div className="flex items-center space-x-4">
+    <div className="my-3 flex items-center space-x-4">
       <span className="font-sans text-xs">카테고리</span>
       <div>
         {categories.map((category, index) => (
-          <CategoryButton key={index} category={category} />
+          <CategoryItemButton
+            key={index}
+            name={category.name}
+            color={category.color}
+          />
         ))}
       </div>
     </div>
