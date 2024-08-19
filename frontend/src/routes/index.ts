@@ -3,4 +3,5 @@ export const routes = {
   login: '/login',
   addPlan: '/add-plan',
   plan: '/plans/:id',
+  kakaoLogin: '/kakao-login',
 }
