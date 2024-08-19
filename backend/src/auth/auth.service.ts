@@ -22,7 +22,8 @@ export class AuthService {
     const params = new URLSearchParams({
       grant_type: 'authorization_code',
       client_id: this.configService.get('KAKAO_CLIENT_ID'),
-      redirect_uri: this.configService.get('KAKAO_REDIRECT_URI'),
+      // redirect_uri: this.configService.get('KAKAO_REDIRECT_URI'),
+      redirect_uri: this.configService.get('KAKAO_FE_REDIRECT_URI'),
       code,
     });
 
