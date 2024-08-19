@@ -12,9 +12,9 @@ type TStoreAction = {
   authLogout: (tokenName: TTokenName) => void
 }
 
-export function getToken() {
-  const accessToken = localStorage.getItem('accessToken')
-  return accessToken
+export function getToken(tokenName: TTokenName) {
+  const token = localStorage.getItem(tokenName)
+  return token
 }
 
 export function setToken(tokenValue: string, tokenName: TTokenName) {
@@ -28,10 +28,11 @@ function removeToken(tokenName: TTokenName) {
 export const useAuthStore = create<TStoreState & TStoreAction>()(
   devtools(
     immer((set) => ({
-      isLoggedIn: getToken() ? true : false,
+      isLoggedIn: getToken('accessToken') ? true : false,
       authLogin: (tokenValue: string, tokenName: TTokenName) =>
         set((state: TStoreState) => {
           state.isLoggedIn = true
+
           setToken(tokenValue, tokenName)
         }),
       authLogout: (tokenName: TTokenName) =>
