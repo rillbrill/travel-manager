@@ -2,8 +2,9 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { PlanService } from './plan.service';
 import { CreatePlanDto } from './dto/create-plan.dto';
 import { UpdatePlanDto } from './dto/update-plan.dto';
+import { Plan } from './entities/plan.entity';
 
-@Controller('plan')
+@Controller('plans')
 export class PlanController {
   constructor(private readonly planService: PlanService) {}
 
@@ -13,7 +14,7 @@ export class PlanController {
   }
 
   @Get()
-  findAll() {
+  async findAll(): Promise<Plan[]> {
     return this.planService.findAll();
   }
 
