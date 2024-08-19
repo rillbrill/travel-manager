@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
-import { getKakaoTokenFromServer } from '@/api/kakaoAuth.api'
-import { IKakaoUserSuccess } from '@/model/kakao.model'
+import { getKakaoTokenFromServer } from '@/api/kakaoAuth'
+import { IKakaoUserSuccess } from '@/types/kakao'
 
 interface Props {
   code: string

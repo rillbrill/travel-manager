@@ -1,4 +1,4 @@
-import { IKakaoUserSuccess } from '@/model/kakao.model'
+import { IKakaoUserSuccess } from '@/types/kakao'
 
 import { httpClient } from './http'
 
