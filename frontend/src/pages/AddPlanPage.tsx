@@ -1,22 +1,24 @@
-import { useState } from 'react'
+import { useMemo } from 'react'
+import { useParams } from 'react-router-dom'
 
 import SetDateForm from '@/components/addPlan/SetDateForm'
 import SetInfoForm from '@/components/addPlan/SetInfoForm'
 import SetPlaceForm from '@/components/addPlan/SetPlaceForm'
-import Stepper from '@/components/addPlan/Stepper/Stepper'
 import { AddPlanStepEnum } from '@/types'
 
 function AddPlanPage() {
-  const [step, setStep] = useState<AddPlanStepEnum>(AddPlanStepEnum.SetDate)
+  const { stepId } = useParams()
+  const currentStep = useMemo(
+    () => (Number(stepId) || AddPlanStepEnum.SetInfo) as AddPlanStepEnum,
+    [stepId]
+  )
 
   return (
-    <div className="flex flex-col items-center gap-y-8 px-4 py-6">
-      <Stepper currentStep={step} />
-
-      {step === AddPlanStepEnum.SetInfo && <SetInfoForm />}
-      {step === AddPlanStepEnum.SetDate && <SetDateForm />}
-      {step === AddPlanStepEnum.SetPlace && <SetPlaceForm />}
-    </div>
+    <>
+      {currentStep === AddPlanStepEnum.SetInfo && <SetInfoForm />}
+      {currentStep === AddPlanStepEnum.SetDate && <SetDateForm />}
+      {currentStep === AddPlanStepEnum.SetPlace && <SetPlaceForm />}
+    </>
   )
 }
 

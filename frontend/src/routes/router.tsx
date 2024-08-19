@@ -1,6 +1,6 @@
 import { createBrowserRouter, Outlet } from 'react-router-dom'
 
-import Layout from '@/components/layout'
+import { AddPlanPageLayout, MainLayout } from '@/components/layout'
 import {
   AddPlanPage,
   KakaoLoginPage,
@@ -16,9 +16,9 @@ const router = createBrowserRouter([
   {
     path: '/',
     element: (
-      <Layout>
+      <MainLayout>
         <Outlet />
-      </Layout>
+      </MainLayout>
     ),
     errorElement: <NotFoundPage />,
     children: [
@@ -31,8 +31,12 @@ const router = createBrowserRouter([
         element: <PlanListPage />,
       },
       {
-        path: routes.addPlan,
-        element: <AddPlanPage />,
+        path: `${routes.addPlan}/:stepId`,
+        element: (
+          <AddPlanPageLayout>
+            <AddPlanPage />
+          </AddPlanPageLayout>
+        ),
       },
       {
         path: routes.plan,
