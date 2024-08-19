@@ -1,10 +1,10 @@
-import CategoryList from '@/components/common/CategoryList'
+import CategoryList from '@/components/planDetail/CategoryList'
+import PlanDetailPageUI from '@/components/planDetail/PlanDetailPageUI'
 
 function PlanDetailPage() {
   return (
     <div>
-      <div>Plan Detail Page</div>
-      <CategoryList />
+      <PlanDetailPageUI />
     </div>
   )
 }
