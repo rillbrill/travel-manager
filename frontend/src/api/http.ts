@@ -1,5 +1,7 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios'
 
+import { getToken } from '@/store/auth'
+
 const BASE_URL: string =
   import.meta.env.VITE_BE_BASE_URL || 'http://localhost:3333'
 const API_TIMEOUT: number = 50000
@@ -10,7 +12,7 @@ export const createClient = (config?: AxiosRequestConfig) => {
     timeout: API_TIMEOUT,
     headers: {
       'Content-Type': 'application/json',
-      // getToken 추후 추가
+      Authorization: getToken() ? getToken() : '',
     },
     withCredentials: true,
     ...config,
@@ -76,7 +78,7 @@ export const axiosRequestHandler = async <T, U>({
     default:
       throw new Error(`Unsupported method: ${method}`)
   }
-
+  console.log(response.config.headers)
   return response
   /**
    * response reuturn

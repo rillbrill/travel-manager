@@ -12,7 +12,7 @@ type TStoreAction = {
   authLogout: (tokenName: TTokenName) => void
 }
 
-function getToken() {
+export function getToken() {
   const accessToken = localStorage.getItem('accessToken')
   return accessToken
 }
