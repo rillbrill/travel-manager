@@ -1,6 +1,6 @@
 import { createBrowserRouter, Outlet } from 'react-router-dom'
 
-import { AddPlanPageLayout, MainLayout } from '@/components/layout'
+import { MainLayout } from '@/components/layout'
 import {
   AddPlanPage,
   KakaoLoginPage,
@@ -31,12 +31,8 @@ const router = createBrowserRouter([
         element: <PlanListPage />,
       },
       {
-        path: `${routes.addPlan}/:stepId`,
-        element: (
-          <AddPlanPageLayout>
-            <AddPlanPage />
-          </AddPlanPageLayout>
-        ),
+        path: routes.addPlan,
+        element: <AddPlanPage />,
       },
       {
         path: routes.plan,
