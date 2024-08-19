@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 import { getKakaoUserFromServer } from '@/api/kakaoAuth'
+import { setToken } from '@/store/auth'
 import { IKakaoFail, IKakaoUserSuccess } from '@/types/kakao'
 
 interface Props {
@@ -17,10 +18,9 @@ export const useKakao = ({ code }: Props) => {
     getKakaoUserFromServer({ code })
       .then((response) => {
         if (response?.data?.accessToken && response?.data?.refreshToken) {
-          localStorage.setItem('accessToken', response.data.accessToken)
-          localStorage.setItem('refreshToken', response.data.refreshToken)
+          setToken(response.data.accessToken, 'accessToken')
+          setToken(response.data.refreshToken, 'refreshToken')
         }
-        // console.log('카카오유저', userInfo)
 
         navigate('/')
       })

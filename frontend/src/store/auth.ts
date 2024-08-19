@@ -17,7 +17,7 @@ export function getToken() {
   return accessToken
 }
 
-function setToken(tokenValue: string, tokenName: TTokenName) {
+export function setToken(tokenValue: string, tokenName: TTokenName) {
   localStorage.setItem(tokenName, tokenValue)
 }
 
