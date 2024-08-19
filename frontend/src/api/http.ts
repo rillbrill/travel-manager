@@ -1,7 +1,8 @@
-import axios, { AxiosRequestConfig } from 'axios'
+import axios, { AxiosRequestConfig, AxiosResponse } from 'axios'
 
-const BASE_URL = 'http://localhost:3333/'
-const API_TIMEOUT = 50000
+const BASE_URL: string =
+  import.meta.env.VITE_BE_BASE_URL || 'http://localhost:3333'
+const API_TIMEOUT: number = 50000
 
 export const createClient = (config?: AxiosRequestConfig) => {
   const axiosInstance = axios.create({
@@ -15,7 +16,7 @@ export const createClient = (config?: AxiosRequestConfig) => {
     ...config,
   })
 
-  axios.interceptors.response.use(
+  axiosInstance.interceptors.response.use(
     (response) => {
       return response
     },
@@ -30,5 +31,59 @@ export const createClient = (config?: AxiosRequestConfig) => {
   )
   return axiosInstance
 }
-
 export const httpClient = createClient()
+
+type TMethods = 'get' | 'post' | 'put' | 'delete'
+
+interface TRequestHandlerArgs<T> {
+  method: TMethods
+  url: string
+  data?: T
+  config?: AxiosRequestConfig
+}
+
+/**
+ *
+ * T : request body data type,
+ * U : response data type
+ * @returns
+ */
+export const axiosRequestHandler = async <T, U>({
+  method,
+  url,
+  data,
+  config,
+}: TRequestHandlerArgs<T>): Promise<AxiosResponse<U>> => {
+  let response: AxiosResponse<U>
+
+  switch (method) {
+    case 'get': {
+      response = await httpClient.get<U>(url, config)
+      break
+    }
+    case 'post': {
+      response = await httpClient.post<U>(url, data, config)
+      break
+    }
+    case 'delete': {
+      response = await httpClient.delete<U>(url, config)
+      break
+    }
+    case 'put': {
+      response = await httpClient.put<U>(url, data, config)
+      break
+    }
+    default:
+      throw new Error(`Unsupported method: ${method}`)
+  }
+
+  return response
+  /**
+   * response reuturn
+   * data : response data
+   * status,
+   * headers
+   * statusText
+   * config
+   */
+}

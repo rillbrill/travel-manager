@@ -1,10 +1,15 @@
 import { IKakaoUserSuccess } from '@/types/kakao'
 
-import { httpClient } from './http'
+import { axiosRequestHandler } from './http'
 
-export const getKakaoTokenFromServer = async ({ code }: { code: string }) => {
-  const response = await httpClient.get<IKakaoUserSuccess>(
-    `/api/auth/kakao?code=${code}`
-  )
-  return response.data
+export const getKakaoUserFromServer = async ({ code }: { code: string }) => {
+  // const response = await httpClient.get<IKakaoUserSuccess>(
+  //   `/api/auth/kakao?code=${code}`
+  // )
+  // return response.data
+
+  return axiosRequestHandler<void, IKakaoUserSuccess>({
+    method: 'get',
+    url: `/api/auth/kakao?code=${code}`,
+  })
 }
