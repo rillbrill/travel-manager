@@ -8,7 +8,7 @@ export const getKakaoUserFromServer = async ({ code }: { code: string }) => {
   // )
   // return response.data
 
-  return axiosRequestHandler<void, IKakaoUserSuccess>({
+  return axiosRequestHandler<IKakaoUserSuccess>({
     method: 'get',
     url: `/api/auth/kakao?code=${code}`,
   })
