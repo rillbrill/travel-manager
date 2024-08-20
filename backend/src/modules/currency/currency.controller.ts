@@ -36,19 +36,25 @@ export class CurrencyController {
   constructor(private readonly currencyService: CurrencyService) {}
 
   @ApiOperation({
-    summary: '외화를 한화로 변환',
-    description:
-      '지정된 외화 금액을 현재 환율을 기준으로 한화(KRW)로 변환합니다.',
+    summary: '통화 변환',
+    description: '지정된 통화 금액을 다른 통화로 변환합니다.',
   })
   @ApiQuery({
-    name: 'code',
-    description: '변환할 통화 코드',
+    name: 'from',
+    description: '변환할 원래 통화 코드',
     type: String,
     required: true,
     example: 'USD',
   })
   @ApiQuery({
-    name: 'price',
+    name: 'to',
+    description: '변환 대상 통화 코드',
+    type: String,
+    required: true,
+    example: 'KRW',
+  })
+  @ApiQuery({
+    name: 'amount',
     description: '변환할 금액',
     type: Number,
     required: true,
@@ -66,27 +72,28 @@ export class CurrencyController {
   })
   @Get()
   async convertCurrency(
-    @Query('code') code: string,
-    @Query('price') price: string,
+    @Query('from') from: string,
+    @Query('to') to: string,
+    @Query('amount') amount: string,
   ) {
-    const amount = parseFloat(price);
-    if (isNaN(amount)) {
-      return { error: '유효하지 않은 가격입니다.' };
+    const numericAmount = parseFloat(amount);
+    if (isNaN(numericAmount)) {
+      return { error: '유효하지 않은 금액입니다.' };
     }
 
     try {
       const convertedAmount = await this.currencyService.convertCurrency(
-        code,
-        'KRW',
-        amount,
+        from,
+        to,
+        numericAmount,
       );
       return {
         original: {
-          code: code,
-          value: amount,
+          code: from,
+          value: numericAmount,
         },
         converted: {
-          code: 'KRW',
+          code: to,
           value: convertedAmount,
         },
       };
