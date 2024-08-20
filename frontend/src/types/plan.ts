@@ -1,6 +1,6 @@
 export type Plan = {
   name: string
-  count: number
+  headCount: number
   startDate: Date
   endDate: Date | null
   places: string[]
