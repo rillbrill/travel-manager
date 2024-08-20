@@ -8,7 +8,7 @@ import { Users } from 'src/entities/users.entity';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { JwtStrategy } from './jwt.strategy';
-import { KakaoStrategy } from './kakao.strategy';
+import { KakaoStrategy } from './_kakao.strategy';
 @Module({
   imports: [
     HttpModule,

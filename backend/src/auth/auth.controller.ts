@@ -60,7 +60,7 @@ export class AuthController {
     },
   })
   @Get('kakao')
-  @UseGuards(AuthGuard('kakao'))
+  // @UseGuards(AuthGuard('kakao'))
   @HttpCode(HttpStatus.OK)
   async kakaoCallback(@Req() req) {
     try {
@@ -196,6 +196,7 @@ export class AuthController {
         await this.authService.refreshAccessToken(refreshToken);
       return { accessToken };
     } catch (error) {
+      //TODO: 클라이언트 리디렉트 추가
       throw new UnauthorizedException('유효하지 않은 리프레시 토큰입니다.');
     }
   }
