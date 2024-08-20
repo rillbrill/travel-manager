@@ -3,3 +3,7 @@ export enum AddPlanStepEnum {
   SetDate,
   SetPlace,
 }
+
+export enum StoreNameEnum {
+  Plan = 'plan',
+}
