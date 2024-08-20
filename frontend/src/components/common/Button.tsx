@@ -1,4 +1,4 @@
-import { HTMLAttributes } from 'react'
+import { ButtonHTMLAttributes } from 'react'
 
 import { cn } from '@/utils/cn'
 
@@ -7,7 +7,8 @@ type Props = {
   shape?: 'button' | 'input'
   label?: string
   isFull?: boolean
-} & HTMLAttributes<HTMLButtonElement>
+  isDisabled?: boolean
+} & ButtonHTMLAttributes<HTMLButtonElement>
 
 function Button({
   children,
@@ -15,6 +16,7 @@ function Button({
   label,
   className,
   isFull = true,
+  isDisabled,
   ...props
 }: Props) {
   const hasLabel = !!label
@@ -27,8 +29,10 @@ function Button({
           shape === 'input'
             ? 'w-full rounded-lg border border-gray-300 bg-white px-2 py-3 text-gray-400'
             : 'flex w-full items-center justify-center gap-x-2 rounded-lg bg-blue-500 p-3 text-white',
+          isDisabled && 'bg-gray-400',
           className,
         ])}
+        disabled={isDisabled}
         {...props}
       >
         {children}
