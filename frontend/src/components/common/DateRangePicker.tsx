@@ -1,5 +1,5 @@
-import 'react-datepicker/dist/react-datepicker.css'
 import '@/styles/datePicker.css'
+import 'react-datepicker/dist/react-datepicker.css'
 
 import { ko } from 'date-fns/locale'
 import { useState } from 'react'
@@ -7,13 +7,12 @@ import DatePicker from 'react-datepicker'
 import { FiChevronLeft, FiChevronRight } from 'react-icons/fi'
 
 import { DateFormatTypeEnum } from '@/types'
-import { Plan } from '@/types/plan'
 import { formatDate } from '@/utils/formatDate'
 
 type Props = {
   defaultStartDate?: Date
   defaultEndDate?: Date
-  onChange: (newValue: Pick<Plan, 'startDate' | 'endDate'>) => void
+  onChange: (startDate: Date, endDate: Date | null) => void
 }
 
 function DateRangePicker({
@@ -34,7 +33,7 @@ function DateRangePicker({
     if (!startDate) return
     setStartDate(startDate)
     setEndDate(endDate || undefined)
-    onChange({ startDate, endDate })
+    onChange(startDate, endDate)
     console.log(dates)
   }
 

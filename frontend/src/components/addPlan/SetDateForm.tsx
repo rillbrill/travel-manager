@@ -8,7 +8,7 @@ import Button from '../common/Button'
 function SetDateForm() {
   const {
     plan: { startDate: defaultStartDate, endDate: defaultEndDate },
-    setPlan,
+    setDates,
   } = usePlanStore()
 
   return (
@@ -16,7 +16,7 @@ function SetDateForm() {
       <DateRangePicker
         defaultStartDate={defaultStartDate}
         defaultEndDate={defaultEndDate || undefined}
-        onChange={setPlan}
+        onChange={setDates}
       />
       <div className="flex flex-col gap-y-4">
         <div className="flex items-center gap-x-6">
