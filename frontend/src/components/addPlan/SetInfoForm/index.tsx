@@ -14,8 +14,9 @@ type Props = {
 
 function SetInfoForm({ currentStep, moveStep }: Props) {
   const {
-    plan: { name, count },
-    setPlan,
+    plan: { name, headCount },
+    setName,
+    setHeadCount,
   } = usePlanStore()
   const {
     control,
@@ -23,7 +24,7 @@ function SetInfoForm({ currentStep, moveStep }: Props) {
   } = useForm<Partial<Plan>>({
     defaultValues: {
       name,
-      count,
+      headCount,
     },
     mode: 'onChange',
   })
@@ -51,22 +52,22 @@ function SetInfoForm({ currentStep, moveStep }: Props) {
               errorMessage={errors.name && error?.message}
               onChange={(e) => {
                 onChange(e)
-                setPlan({ name: e.target.value, count })
+                setName(e.target.value)
               }}
               {...props}
             />
           )}
         />
         <Controller
-          name="count"
+          name="headCount"
           control={control}
           rules={{ required: true, min: 1 }}
           render={({ field: { value, ...props } }) => (
             <Input
               type="number"
-              value={count}
+              value={headCount}
               label="총 인원"
-              onNumberChange={(newValue) => setPlan({ name, count: newValue })}
+              onNumberChange={(value) => setHeadCount(value)}
               {...props}
             />
           )}
