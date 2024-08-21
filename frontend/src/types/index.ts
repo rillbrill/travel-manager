@@ -1,7 +1,18 @@
 export enum AddPlanStepEnum {
-  SetInfo = 1,
-  SetDate = 2,
-  SetPlace = 3,
+  SetInfo,
+  SetDate,
+  SetPlace,
+}
+
+export enum StoreNameEnum {
+  Plan = 'plan',
+}
+
+export enum DateFormatTypeEnum {
+  DateWithDots = 'yyyy.MM.dd',
+  DateWithSlash = 'yyyy/MM/dd',
+  YearAndMonth = 'yyyy.MM',
+  MonthAndDay = 'MM.dd',
 }
 
 export enum HttpStatusCodeEnum {
