@@ -1,4 +1,8 @@
-const ScheduleList = ({ schedules }) => {
+import { useState } from 'react'
+
+import { ScheduleType } from './schedule.model'
+
+const ScheduleList = ({ schedules }: ScheduleType) => {
   // const [schedules, setSchedules] = useState<ScheduleType[]>([
   //   { category: '활동', color: '#A9C6F1', location: '모모치 해변' },
   // ])

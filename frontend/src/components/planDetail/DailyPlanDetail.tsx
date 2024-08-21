@@ -4,6 +4,7 @@ import { FaPlusSquare } from 'react-icons/fa'
 import AddExpenseForm from './AddExpenseForm'
 import AddScheduleForm from './AddScheduleForm'
 import ExpenseList from './ExpenseList'
+import { DailyPlanDetailProps } from './schedule.model'
 import ScheduleList from './ScheduleList'
 
 const TABS = [
@@ -36,7 +37,7 @@ const MenuTab = ({ activeTab, onTabClick, onButtonClick }) => {
         ))}
       </div>
       <button onClick={onButtonClick}>
-        <FaPlusSquare size="20" color="#777777" />
+        <FaPlusSquare size="20" color="#2DD4BF" />
       </button>
     </div>
   )
@@ -49,7 +50,7 @@ const Form = ({ activeTab, showAddForm }) => {
   return <activeTabConfig.Form />
 }
 
-const DailyPlanDetail = ({ schedules, expenses }) => {
+const DailyPlanDetail = ({ schedules, expenses }: DailyPlanDetailProps) => {
   const [activeTab, setActiveTab] = useState<string>('schedule')
   const [showAddForm, setShowAddForm] = useState<boolean>(false)
 

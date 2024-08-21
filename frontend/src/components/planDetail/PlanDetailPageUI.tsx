@@ -49,6 +49,10 @@ const PlanDetailPageUI = () => {
         { category: '활동', color: '#A9C6F1', location: '모모치 해변' },
         { category: '아침', color: '#A3D4CC', location: 'OO 식당' },
       ],
+      expenses: [
+        { category: '교통비', color: '#D3D3F3', expense: '30,000' },
+        { category: '식비', color: '#EFD9A0', expense: '20,000' },
+      ],
     },
     {
       planId: 'plan_id',
@@ -60,10 +64,35 @@ const PlanDetailPageUI = () => {
         { category: '활동', color: '#A9C6F1', location: 'AA 뮤지컬' },
         { category: '저녁', color: '#FEF08A', location: 'BB 식당' },
       ],
+      expenses: [
+        { category: '식비', color: '#EFD9A0', expense: '15,000' },
+        { category: '관광', color: '#F9AEAE', expense: '35,000' },
+      ],
     },
   ]
 
-  const expenses = []
+  /*const expenses = [
+    {
+      planId: 'plan_id',
+      dayId: 'day_id',
+      day: 1,
+      date: '2024-01-01',
+      expensesDetail: [
+        { category: '교통비', color: '#D3D3F3', expense: '30,000' },
+        { category: '식비', color: '#EFD9A0', expense: '20,000' },
+      ],
+    },
+    {
+      planId: 'plan_id',
+      dayId: 'day_id',
+      day: 2,
+      date: '2024-01-02',
+      expensesDetail: [
+        { category: '식비', color: '#EFD9A0', expense: '15,000' },
+        { category: '관광', color: '#F9AEAE', expense: '35,000' },
+      ],
+    },
+  ]*/
 
   return (
     <>
@@ -72,7 +101,10 @@ const PlanDetailPageUI = () => {
         <div className="mx-3 font-sans" key={day.day}>
           <DailyHeader day={day.day} date={day.date} location={day.location} />
           <div className="mx-4 mb-5">
-            <DailyPlanDetail schedules={day.schedules} expenses={expenses} />
+            <DailyPlanDetail
+              schedules={day.schedules}
+              expenses={day.expenses}
+            />
           </div>
         </div>
       ))}
