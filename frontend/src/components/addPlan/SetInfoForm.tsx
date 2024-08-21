@@ -7,7 +7,8 @@ import { usePlanStore } from '@/store/plan'
 function SetInfoForm() {
   const {
     plan: { name, headCount },
-    setPlan,
+    setName,
+    setHeadCount,
   } = usePlanStore()
   const {
     control,
@@ -36,7 +37,7 @@ function SetInfoForm() {
             errorMessage={errors.name && error?.message}
             onChange={(e) => {
               onChange(e)
-              setPlan({ name: e.target.value, headCount })
+              setName(e.target.value)
             }}
             {...props}
           />
@@ -51,9 +52,7 @@ function SetInfoForm() {
             type="number"
             value={headCount}
             label="총 인원"
-            onNumberChange={(newValue) =>
-              setPlan({ name, headCount: newValue })
-            }
+            onNumberChange={(value) => setHeadCount(value)}
             {...props}
           />
         )}
