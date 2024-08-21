@@ -1,10 +1,10 @@
 import { useMemo, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 
+import CheckPlan from '@/components/addPlan/CheckPlan'
 import MoveStepButtons from '@/components/addPlan/MoveStepButtons'
-import SetDateForm from '@/components/addPlan/SetDateForm'
 import SetInfoForm from '@/components/addPlan/SetInfoForm'
-import SetPlaceForm from '@/components/addPlan/SetPlaceForm'
+import SetPlaceAndDateForm from '@/components/addPlan/SetPlaceAndDateForm'
 import Stepper from '@/components/addPlan/Stepper'
 import { usePlanStore } from '@/store/plan'
 import { AddPlanStepEnum } from '@/types'
@@ -27,26 +27,27 @@ function AddPlanPage() {
     switch (currentStep) {
       case AddPlanStepEnum.SetInfo:
         return !errors.name && !errors.headCount
-      case AddPlanStepEnum.SetDate:
-        return !!plan.startDate && !!plan.endDate
-      case AddPlanStepEnum.SetPlace:
+      case AddPlanStepEnum.SetPlaceAndDate:
+        return !!plan.startDate && !!plan.endDate && plan.places.length > 0
+      case AddPlanStepEnum.CheckPlan:
         return !errors.places
     }
   }, [currentStep, plan, errors])
   const moveStep = (step: number) => {
     setCurrentStep(step)
   }
-  console.log(errors, isValid)
 
   return (
-    <div className="flex flex-1 flex-col items-center gap-y-4 p-4">
+    <div className="relative flex flex-1 flex-col items-center gap-y-4 p-4">
       <Stepper currentStep={currentStep} />
 
       <FormProvider {...methods}>
-        <form className="flex w-full flex-1 flex-col justify-between">
+        <form className="flex w-full flex-1 flex-col">
           {currentStep === AddPlanStepEnum.SetInfo && <SetInfoForm />}
-          {currentStep === AddPlanStepEnum.SetDate && <SetDateForm />}
-          {currentStep === AddPlanStepEnum.SetPlace && <SetPlaceForm />}
+          {currentStep === AddPlanStepEnum.SetPlaceAndDate && (
+            <SetPlaceAndDateForm />
+          )}
+          {currentStep === AddPlanStepEnum.CheckPlan && <CheckPlan />}
         </form>
       </FormProvider>
 

@@ -1,4 +1,4 @@
-import { FiCalendar, FiMapPin, FiUser } from 'react-icons/fi'
+import { FiList, FiMapPin, FiUser } from 'react-icons/fi'
 
 import { cn } from '@/utils/cn'
 
@@ -14,12 +14,12 @@ const steps = [
     icon: <FiUser />,
   },
   {
-    title: '여행 날짜 설정',
-    icon: <FiCalendar />,
+    title: '여행지 및 날짜 설정',
+    icon: <FiMapPin />,
   },
   {
-    title: '여행지 설정',
-    icon: <FiMapPin />,
+    title: '여행 확인',
+    icon: <FiList />,
   },
 ]
 
