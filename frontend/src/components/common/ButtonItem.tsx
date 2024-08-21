@@ -4,7 +4,7 @@ type Props = {
   onClick: () => void
 }
 const ButtonItem = ({ name, color, onClick }: Props) => {
-  const categoryItemStyleClass = `mx-1 rounded-lg px-2 py-1 font-sans text-xs`
+  const categoryItemStyleClass = `rounded-lg px-2 py-1 font-sans text-xs`
 
   return (
     <button

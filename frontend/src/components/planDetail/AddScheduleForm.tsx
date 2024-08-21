@@ -12,8 +12,10 @@ const AddScheduleForm = () => {
 
   return (
     <>
-      <CategoryList setCategory={setCategory} />
-      <LocationInputForm category={category} />
+      <div className="mx-3 my-3 space-y-2">
+        <CategoryList setCategory={setCategory} />
+        <LocationInputForm category={category} />
+      </div>
     </>
   )
 }
