@@ -1,4 +1,4 @@
-import dayjs from 'dayjs'
+//import dayjs from 'dayjs'
 
 export const formatNumber = (number: number): string => {
   return number.toLocaleString()

@@ -1,5 +1,12 @@
+//import CategoryList from '@/components/planDetail/CategoryList'
+import PlanDetailPageUI from '@/components/planDetail/PlanDetailPageUI'
+
 function PlanDetailPage() {
-  return <div>Plan Detail Page</div>
+  return (
+    <div>
+      <PlanDetailPageUI />
+    </div>
+  )
 }
 
 export default PlanDetailPage
