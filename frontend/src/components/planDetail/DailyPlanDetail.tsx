@@ -60,7 +60,7 @@ const Form = ({ activeTab, showAddForm }) => {
   return <activeTabConfig.Form />
 }
 
-const PlanDetail = () => {
+const DailyPlanDetail = () => {
   const [activeTab, setActiveTab] = useState<string>('schedule')
   const [showAddForm, setShowAddForm] = useState<boolean>(false)
 
@@ -86,4 +86,4 @@ const PlanDetail = () => {
   )
 }
 
-export default PlanDetail
+export default DailyPlanDetail

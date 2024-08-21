@@ -1,4 +1,4 @@
-import MenuTab from './MenuTab'
+import MenuTab from './DailyPlanDetail'
 
 const DailySchedule = () => {
   return (
