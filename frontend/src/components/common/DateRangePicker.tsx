@@ -1,18 +1,19 @@
-import '@/styles/datePicker.css'
 import 'react-datepicker/dist/react-datepicker.css'
+import '@/styles/datePicker.css'
 
 import { ko } from 'date-fns/locale'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import DatePicker from 'react-datepicker'
 import { FiChevronLeft, FiChevronRight } from 'react-icons/fi'
 
 import { DateFormatTypeEnum } from '@/types'
+import { NullableDate } from '@/types/plan'
 import { formatDate } from '@/utils/formatDate'
 
 type Props = {
-  defaultStartDate?: Date
-  defaultEndDate?: Date
-  onChange: (startDate: Date, endDate: Date | null) => void
+  defaultStartDate?: NullableDate
+  defaultEndDate?: NullableDate
+  onChange: (startDate: NullableDate, endDate: NullableDate) => void
 }
 
 function DateRangePicker({
@@ -21,27 +22,30 @@ function DateRangePicker({
   onChange,
 }: Props) {
   const [startDate, setStartDate] = useState<Date | undefined>(
-    defaultStartDate || new Date()
+    defaultStartDate || undefined
   )
   const [endDate, setEndDate] = useState<Date | undefined>(
-    defaultEndDate ?? undefined
+    defaultEndDate || undefined
   )
 
-  const handleDateChange = (dates: [Date | null, Date | null]) => {
+  const handleDateChange = (dates: [NullableDate, NullableDate]) => {
     const [startDate, endDate] = dates
 
-    if (!startDate) return
-    setStartDate(startDate)
+    setStartDate(startDate || undefined)
     setEndDate(endDate || undefined)
     onChange(startDate, endDate)
-    console.log(dates)
   }
+
+  useEffect(() => {
+    setStartDate(defaultStartDate || undefined)
+    setEndDate(defaultEndDate || undefined)
+  }, [defaultStartDate, defaultEndDate])
 
   return (
     <div className="flex max-h-fit w-full justify-center px-3">
       <DatePicker
         locale={ko}
-        selected={startDate}
+        selected={null}
         startDate={startDate}
         endDate={endDate}
         selectsRange

@@ -3,7 +3,7 @@ import { Link, useLocation } from 'react-router-dom'
 
 import { routes } from '@/routes'
 
-import LogoLink from '../common/LogoLink'
+import { LogoLink } from '../common'
 
 function Header() {
   const { pathname } = useLocation()
