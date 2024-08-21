@@ -1,7 +1,7 @@
 export enum AddPlanStepEnum {
   SetInfo,
-  SetDate,
-  SetPlace,
+  SetPlaceAndDate,
+  CheckPlan,
 }
 
 export enum StoreNameEnum {

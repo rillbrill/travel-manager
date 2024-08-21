@@ -1,5 +1,5 @@
 import { StoreNameEnum } from '@/types'
-import { Plan } from '@/types/plan'
+import { NullableDate, Place, Plan } from '@/types/plan'
 
 import { createStoreWithMiddleware } from './createStoreWithMiddleware'
 
@@ -10,7 +10,8 @@ type PlanState = {
 type PlanActions = {
   setName: (value: string) => void
   setHeadCount: (value: number) => void
-  setDates: (startDate: Date, endDate: Date | null) => void
+  setDates: (startDate: NullableDate, endDate: NullableDate) => void
+  setPlaces: (places: Place[]) => void
   setPlan: (newPlan: Partial<Plan>) => void
 }
 
@@ -37,6 +38,10 @@ export const usePlanStore = createStoreWithMiddleware<PlanState & PlanActions>(
       set(({ plan }) => {
         plan.startDate = startDate
         plan.endDate = endDate
+      }),
+    setPlaces: (places) =>
+      set(({ plan }) => {
+        plan.places = places
       }),
     setPlan: (values) => {
       set(({ plan }) => {
