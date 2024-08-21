@@ -20,9 +20,9 @@ type CategoryListProps = {
 
 const CategoryList: React.FC<CategoryListProps> = ({ setCategory }) => {
   return (
-    <div className="my-3 flex items-center space-x-4">
-      <span className="font-sans text-xs">카테고리</span>
-      <div>
+    <div className="flex items-center space-x-4">
+      <span className="s-12 font-semibold">카테고리</span>
+      <div className="space-x-1">
         {categories.map((category, index) => (
           <ButtonItem
             key={index}

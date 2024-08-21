@@ -25,9 +25,9 @@ const LocationInputForm = ({ category }: { category: CategoryType }) => {
   return (
     <form
       onSubmit={handleSubmit}
-      className="my-3 flex items-center space-x-2 font-sans text-xs"
+      className="flex items-center space-x-2 font-sans text-xs"
     >
-      <label>장소</label>
+      <label className="w-12 font-semibold">장소</label>
       <input
         onChange={handleInputChange}
         type="text"

@@ -23,7 +23,7 @@ const TABS = [
 
 const MenuTab = ({ activeTab, onTabClick, onButtonClick }) => {
   return (
-    <div className="mx-5 my-3 flex justify-between space-x-4 font-sans text-xs">
+    <div className="my-3 flex justify-between space-x-4 text-xs font-bold">
       <div className="space-x-4">
         {TABS.map((tab) => (
           <button
@@ -42,17 +42,6 @@ const MenuTab = ({ activeTab, onTabClick, onButtonClick }) => {
   )
 }
 
-const List = ({ activeTab }) => {
-  const activeTabConfig = TABS.find((tab) => tab.name === activeTab)
-  if (!activeTabConfig) return null
-
-  return (
-    <div className="mx-5 my-3 flex justify-between space-x-4 font-sans text-xs">
-      <activeTabConfig.List />
-    </div>
-  )
-}
-
 const Form = ({ activeTab, showAddForm }) => {
   const activeTabConfig = TABS.find((tab) => tab.name === activeTab)
   if (!activeTabConfig || !showAddForm) return null
@@ -60,7 +49,7 @@ const Form = ({ activeTab, showAddForm }) => {
   return <activeTabConfig.Form />
 }
 
-const DailyPlanDetail = () => {
+const DailyPlanDetail = ({ schedules, expenses }) => {
   const [activeTab, setActiveTab] = useState<string>('schedule')
   const [showAddForm, setShowAddForm] = useState<boolean>(false)
 
@@ -73,6 +62,15 @@ const DailyPlanDetail = () => {
     setShowAddForm((prev) => !prev)
   }
 
+  const Layout = ({ List, Form }) => {
+    return (
+      <>
+        <div>{List}</div>
+        {Form}
+      </>
+    )
+  }
+
   return (
     <>
       <MenuTab
@@ -80,8 +78,29 @@ const DailyPlanDetail = () => {
         onTabClick={handleTabClick}
         onButtonClick={handleButtonClick}
       />
-      <List activeTab={activeTab} />
-      <Form activeTab={activeTab} showAddForm={showAddForm} />
+      {/* <Layout
+        List={() => {
+          switch (activeTab) {
+            case 'schedule':
+              return <ScheduleList schedules={schedules} />
+            case 'expense':
+              return <ExpenseList expenses={expenses} />
+          }
+        }}
+        Form={() => {
+          switch (activeTab) {
+            case 'schedule':
+              return <ScheduleList schedules={schedules} />
+            case 'expense':
+              return <ExpenseList expenses={expenses} />
+          }
+        }}
+      /> */}
+      <div className="text-xs">
+        {activeTab === 'schedule' && <ScheduleList schedules={schedules} />}
+        {activeTab === 'expense' && <ExpenseList expenses={expenses} />}
+        <Form activeTab={activeTab} showAddForm={showAddForm} />
+      </div>
     </>
   )
 }
