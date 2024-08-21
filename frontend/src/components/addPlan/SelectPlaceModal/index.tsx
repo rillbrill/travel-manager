@@ -55,7 +55,7 @@ function SelectPlaceModal({ closeModal, addPlace }: Props) {
             <Button
               type="button"
               isFull={false}
-              className="border border-blue-500 bg-gray-50 p-2 text-blue-500"
+              className="border border-blue-500 bg-gray-50 px-3 py-1 text-blue-500"
               onClick={() => addPlace(elem)}
             >
               선택
