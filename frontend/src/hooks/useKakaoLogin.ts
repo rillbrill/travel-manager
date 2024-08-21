@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
-import { getKakaoUserFromServer } from '@/api/kakaoAuth'
+import { getFetchKakaoLogin } from '@/api/kakaoAuth'
+import { routes } from '@/routes'
 import { setToken, useAuthStore } from '@/store/auth'
 import { IKakaoFail, IKakaoUserSuccess } from '@/types/kakao'
 
@@ -9,26 +10,22 @@ interface Props {
   code: string
 }
 
-export const useKakao = ({ code }: Props) => {
+export const useKakaoLogin = ({ code }: Props) => {
   const navigate = useNavigate()
 
-  const [userInfo, setUserInfo] = useState<IKakaoUserSuccess | null>(null)
   const { authLogin } = useAuthStore()
   useEffect(() => {
-    getKakaoUserFromServer({ code })
+    getFetchKakaoLogin({ code })
       .then((response) => {
         if (response?.data?.accessToken && response?.data?.refreshToken) {
           authLogin(response.data.accessToken, 'accessToken')
           setToken(response.data.refreshToken, 'refreshToken')
+          navigate(routes.plans)
         }
-
-        navigate('/')
       })
       .catch((error) => {
         console.error(error)
-        navigate('/login')
+        navigate(routes.login)
       })
   }, [code])
-
-  return { userInfo }
 }

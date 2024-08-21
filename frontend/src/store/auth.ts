@@ -21,7 +21,7 @@ export function setToken(tokenValue: string, tokenName: TTokenName) {
   localStorage.setItem(tokenName, tokenValue)
 }
 
-function removeToken(tokenName: TTokenName) {
+export function removeToken(tokenName: TTokenName) {
   localStorage.removeItem(tokenName)
 }
 
