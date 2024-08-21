@@ -10,7 +10,6 @@ const DailySchedule = () => {
         <div className="mx-1">2024.01.01 {/* 여행 날짜 */}</div>
         <div className="mx-1 ml-auto">일본 오키나와 {/* 여행 장소 */}</div>
       </div>
-      <MenuTab />
     </>
   )
 }

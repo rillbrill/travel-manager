@@ -4,7 +4,7 @@ import CategoryList from './CategoryList'
 import LocationInputForm from './LocationInputForm'
 import { CategoryType } from './schedule.model'
 
-const AddSchedule = () => {
+const AddScheduleForm = () => {
   const [category, setCategory] = useState<CategoryType>({
     name: '',
     color: '',
@@ -18,4 +18,4 @@ const AddSchedule = () => {
   )
 }
 
-export default AddSchedule
+export default AddScheduleForm
