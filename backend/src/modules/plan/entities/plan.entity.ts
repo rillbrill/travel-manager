@@ -40,6 +40,6 @@ export class Plan {
   @Column({ type: 'boolean', default: false })
   plan_end: boolean;
 
-  @OneToMany(() => Day, (day) => day.plan) // Day 엔티티와 일대다 관계 설정
+  @OneToMany(() => Day, (day) => day.plan, { onDelete: 'CASCADE' }) // Day 엔티티와 일대다 관계 설정
   days: Day[];
 }
