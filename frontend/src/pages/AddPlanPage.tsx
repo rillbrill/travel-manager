@@ -28,9 +28,15 @@ function AddPlanPage() {
       case AddPlanStepEnum.SetInfo:
         return !errors.name && !errors.headCount
       case AddPlanStepEnum.SetPlaceAndDate:
-        return !!plan.startDate && !!plan.endDate && plan.places.length > 0
+        return (
+          !!plan.startDate &&
+          !!plan.endDate &&
+          plan.places.length > 0 &&
+          plan.places.filter((elem) => !elem.startDate || !elem.endDate)
+            .length === 0
+        )
       case AddPlanStepEnum.CheckPlan:
-        return !errors.places
+        return true
     }
   }, [currentStep, plan, errors])
   const moveStep = (step: number) => {
