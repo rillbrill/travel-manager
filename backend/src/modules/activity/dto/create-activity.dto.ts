@@ -1,6 +1,6 @@
 import { IsString, IsOptional, IsInt } from 'class-validator';
 
-export class CreateDayActivityDto {
+export class CreateActivityDto {
   @IsString()
   readonly activity_name: string;
 

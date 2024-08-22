@@ -7,8 +7,8 @@ import {
 } from 'typeorm';
 import { Day } from 'src/modules/day/entities/day.entity';
 
-@Entity('dayActivities')
-export class DayActivity {
+@Entity('activities')
+export class Activity {
   @PrimaryGeneratedColumn('uuid') // UUID로 기본 키 생성
   id: string;
 

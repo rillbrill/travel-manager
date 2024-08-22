@@ -7,18 +7,18 @@ import {
   Param,
   Body,
 } from '@nestjs/common';
-import { DayActivityService } from './day-activity.service';
-import { CreateDayActivityDto } from './dto/create-day-activity.dto';
-import { UpdateDayActivityDto } from './dto/update-day-activity.dto';
+import { ActivityService } from './activity.service';
+import { CreateActivityDto } from './dto/create-activity.dto';
+import { UpdateActivityDto } from './dto/update-activity.dto';
 
 @Controller('plans/:planId/days/:dayId/activities')
-export class DayActivityController {
-  constructor(private readonly dayActivityService: DayActivityService) {}
+export class ActivityController {
+  constructor(private readonly activityService: ActivityService) {}
 
   // 전체 조회
   @Get()
   findAll(@Param('planId') planId: string, @Param('dayId') dayId: string) {
-    return this.dayActivityService.findAll(planId, dayId);
+    return this.activityService.findAll(planId, dayId);
   }
 
   // 단일 조회
@@ -28,7 +28,7 @@ export class DayActivityController {
     @Param('dayId') dayId: string,
     @Param('activityId') activityId: string,
   ) {
-    return this.dayActivityService.findOne(planId, dayId, activityId);
+    return this.activityService.findOne(planId, dayId, activityId);
   }
 
   // 단일 생성
@@ -36,9 +36,9 @@ export class DayActivityController {
   create(
     @Param('planId') planId: string,
     @Param('dayId') dayId: string,
-    @Body() createDayActivityDto: CreateDayActivityDto,
+    @Body() createDayActivityDto: CreateActivityDto,
   ) {
-    return this.dayActivityService.create(planId, dayId, createDayActivityDto);
+    return this.activityService.create(planId, dayId, createDayActivityDto);
   }
 
   // 단일 수정
@@ -47,13 +47,13 @@ export class DayActivityController {
     @Param('planId') planId: string,
     @Param('dayId') dayId: string,
     @Param('activityId') activityId: string,
-    @Body() updateDayActivityDto: UpdateDayActivityDto,
+    @Body() updateActivityDto: UpdateActivityDto,
   ) {
-    return this.dayActivityService.update(
+    return this.activityService.update(
       planId,
       dayId,
       activityId,
-      updateDayActivityDto,
+      updateActivityDto,
     );
   }
 
@@ -64,6 +64,6 @@ export class DayActivityController {
     @Param('dayId') dayId: string,
     @Param('activityId') activityId: string,
   ) {
-    return this.dayActivityService.remove(planId, dayId, activityId);
+    return this.activityService.remove(planId, dayId, activityId);
   }
 }

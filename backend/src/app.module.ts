@@ -12,7 +12,7 @@ import { UploadModule } from './modules/upload/upload.module';
 import { CostModule } from './modules/cost/cost.module';
 import { PlanModule } from './modules/plan/plan.module';
 import { DayModule } from './modules/day/day.module';
-import { DayActivityModule } from './modules/day-activity/day-activity.module';
+import { ActivityModule } from './modules/activity/activity.module';
 
 import { ConfigModule } from '@nestjs/config';
 
@@ -49,7 +49,7 @@ import { ConfigModule } from '@nestjs/config';
     CostModule,
     PlanModule,
     DayModule,
-    DayActivityModule,
+    ActivityModule,
   ],
   controllers: [AppController],
   providers: [AppService],

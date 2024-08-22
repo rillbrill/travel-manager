@@ -1,15 +1,15 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { DayActivity } from './entities/day-activity.entity';
-import { CreateDayActivityDto } from './dto/create-day-activity.dto';
-import { UpdateDayActivityDto } from './dto/update-day-activity.dto';
+import { Activity } from './entities/activity.entity';
+import { CreateActivityDto } from './dto/create-activity.dto';
+import { UpdateActivityDto } from './dto/update-activity.dto';
 
 @Injectable()
-export class DayActivityService {
+export class ActivityService {
   constructor(
-    @InjectRepository(DayActivity)
-    private readonly dayActivityRepository: Repository<DayActivity>,
+    @InjectRepository(Activity)
+    private readonly dayActivityRepository: Repository<Activity>,
   ) {}
 
   async findAll(planId: string, dayId: string) {
@@ -31,7 +31,7 @@ export class DayActivityService {
   async create(
     planId: string,
     dayId: string,
-    createDayActivityDto: CreateDayActivityDto,
+    createDayActivityDto: CreateActivityDto,
   ) {
     const dayActivity = this.dayActivityRepository.create({
       ...createDayActivityDto,
@@ -44,7 +44,7 @@ export class DayActivityService {
     planId: string,
     dayId: string,
     activityId: string,
-    updateDayActivityDto: UpdateDayActivityDto,
+    updateDayActivityDto: UpdateActivityDto,
   ) {
     const activity = await this.findOne(planId, dayId, activityId);
     if (!activity) {

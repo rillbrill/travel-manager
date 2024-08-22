@@ -1,4 +1,4 @@
-import { DayActivity } from 'src/modules/day-activity/entities/day-activity.entity';
+import { Activity } from 'src/modules/activity/entities/activity.entity';
 import { Plan } from 'src/modules/plan/entities/plan.entity';
 import {
   Entity,
@@ -27,6 +27,6 @@ export class Day {
   @Column({ type: 'varchar', length: 255 })
   day_loc: string;
 
-  @OneToMany(() => DayActivity, (activity) => activity.day)
-  activities: DayActivity[];
+  @OneToMany(() => Activity, (activity) => activity.day)
+  activities: Activity[];
 }
