@@ -10,14 +10,14 @@ type Props = {
   children: React.ReactNode
 }
 
-function Layout({ children }: Props) {
+function MainLayout({ children }: Props) {
   const { pathname } = useLocation()
   const isLoginPage = useMemo(() => pathname === routes.login, [pathname])
 
   return (
     <div className="layout">
       <LogoSection />
-      <div className="container shadow-container">
+      <div className="container flex flex-col bg-gray-50 shadow-container">
         {!isLoginPage && <Header />}
         {children}
       </div>
@@ -25,4 +25,4 @@ function Layout({ children }: Props) {
   )
 }
 
-export default Layout
+export default MainLayout

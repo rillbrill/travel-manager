@@ -1,42 +1,41 @@
-import { FiCalendar, FiMapPin, FiUser } from 'react-icons/fi'
+import { FiList, FiMapPin, FiUser } from 'react-icons/fi'
 
-import { AddPlanStepEnum } from '@/types'
 import { cn } from '@/utils/cn'
 
 import StepperItem from './StepperItem'
 
 type Props = {
-  currentStep: AddPlanStepEnum
+  currentStep: number
 }
 
 const steps = [
   {
-    step: '여행 정보 설정',
+    title: '여행 정보 설정',
     icon: <FiUser />,
   },
   {
-    step: '여행 날짜 설정',
-    icon: <FiCalendar />,
+    title: '여행지 및 날짜 설정',
+    icon: <FiMapPin />,
   },
   {
-    step: '여행지 설정',
-    icon: <FiMapPin />,
+    title: '여행 확인',
+    icon: <FiList />,
   },
 ]
 
 function Stepper({ currentStep }: Props) {
   return (
     <div className="flex items-center gap-x-2">
-      {steps.map((elem, index) => {
+      {steps.map((step, index) => {
         const isLastStep = index === steps.length - 1
-        const isDoneStep = index + 1 < currentStep
+        const isDoneStep = index < currentStep
 
         return (
-          <div className="flex" key={elem.step}>
+          <div className="flex" key={step.title}>
             <StepperItem
-              step={elem.step}
-              icon={elem.icon}
-              isCurrentStep={currentStep === index + 1}
+              step={step.title}
+              icon={step.icon}
+              isCurrentStep={currentStep === index}
               isDoneStep={isDoneStep}
             />
             {!isLastStep && (

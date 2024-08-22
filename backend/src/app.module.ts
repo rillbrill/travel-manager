@@ -15,6 +15,7 @@ import { PlanModule } from './modules/plan/plan.module';
 import { Users } from './entities/users.entity';
 import { ConfigModule } from '@nestjs/config';
 import { HttpModule } from '@nestjs/axios';
+import { Plan } from './modules/plan/entities/plan.entity';
 
 @Module({
   imports: [
@@ -29,7 +30,7 @@ import { HttpModule } from '@nestjs/axios';
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_DATABASE,
-      entities: [Users],
+      entities: [Users, Plan],
       charset: 'utf8mb4_general_ci',
       synchronize: process.env.NODE_ENV === 'development',
       logging: process.env.NODE_ENV === 'development',
