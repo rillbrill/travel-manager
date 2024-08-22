@@ -11,10 +11,10 @@ import { CurrencyModule } from './modules/currency/currency.module';
 import { UploadModule } from './modules/upload/upload.module';
 import { CostModule } from './modules/cost/cost.module';
 import { PlanModule } from './modules/plan/plan.module';
+import { DayModule } from './modules/day/day.module';
+import { DayActivityModule } from './modules/day-activity/day-activity.module';
 
-import { Users } from './entities/users.entity';
 import { ConfigModule } from '@nestjs/config';
-import { Plan } from './modules/plan/entities/plan.entity';
 
 @Module({
   imports: [
@@ -29,7 +29,7 @@ import { Plan } from './modules/plan/entities/plan.entity';
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_DATABASE,
-      entities: [Users, Plan],
+      entities: [__dirname + '/**/*.entity.{js,ts}'],
       charset: 'utf8mb4_general_ci',
       synchronize: true,
       logging: true,
@@ -48,6 +48,8 @@ import { Plan } from './modules/plan/entities/plan.entity';
     UploadModule,
     CostModule,
     PlanModule,
+    DayModule,
+    DayActivityModule,
   ],
   controllers: [AppController],
   providers: [AppService],
