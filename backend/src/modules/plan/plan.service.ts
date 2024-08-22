@@ -20,8 +20,8 @@ export class PlanService {
     return this.planRepository.find({
       order: {
         plan_end: 'ASC',
-        start_date:'ASC'
-      }
+        start_date: 'ASC',
+      },
     });
   }
 
