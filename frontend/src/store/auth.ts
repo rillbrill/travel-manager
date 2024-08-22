@@ -8,7 +8,7 @@ type TStoreState = {
 
 type TTokenName = 'accessToken' | 'refreshToken'
 type TStoreAction = {
-  authLogin: (tokenValue: string, tokenName: TTokenName) => void
+  authLogin: (tokenName: TTokenName, tokenValue: string) => void
   authLogout: (tokenName: TTokenName) => void
 }
 
@@ -29,10 +29,9 @@ export const useAuthStore = create<TStoreState & TStoreAction>()(
   devtools(
     immer((set) => ({
       isLoggedIn: getToken('accessToken') ? true : false,
-      authLogin: (tokenValue: string, tokenName: TTokenName) =>
+      authLogin: (tokenName: TTokenName, tokenValue: string) =>
         set((state: TStoreState) => {
           state.isLoggedIn = true
-
           setToken(tokenName, tokenValue)
         }),
       authLogout: (tokenName: TTokenName) =>
