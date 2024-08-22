@@ -4,7 +4,6 @@ import { useNavigate } from 'react-router-dom'
 import { getKakaoToken } from '@/api/kakaoAuth'
 import { routes } from '@/routes'
 import { setToken, useAuthStore } from '@/store/auth'
-import { IKakaoFail, IKakaoUserSuccess } from '@/types/kakao'
 
 interface Props {
   code: string
