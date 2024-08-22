@@ -1,5 +1,6 @@
 import { Day } from 'src/modules/day/entities/day.entity';
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
+import moment from 'moment-timezone';
 
 @Entity('plans')
 export class Plan {
@@ -18,10 +19,22 @@ export class Plan {
   @Column({ type: 'int' })
   total_expenses: number;
 
-  @Column({ type: 'timestamp' })
+  @Column({
+    type: 'timestamp',
+    transformer: {
+      to: (value: Date) => moment(value).utc().toDate(), // 저장 시 UTC로 변환
+      from: (value: Date) => moment(value).tz('Asia/Seoul').toDate(), // 읽을 때 로컬 타임존으로 변환
+    },
+  })
   start_date: Date;
 
-  @Column({ type: 'timestamp' })
+  @Column({
+    type: 'timestamp',
+    transformer: {
+      to: (value: Date) => moment(value).utc().toDate(), // 저장 시 UTC로 변환
+      from: (value: Date) => moment(value).tz('Asia/Seoul').toDate(), // 읽을 때 로컬 타임존으로 변환
+    },
+  })
   end_date: Date;
 
   @Column({ type: 'boolean', default: false })

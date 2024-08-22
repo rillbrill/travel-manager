@@ -1,5 +1,7 @@
 import { Activity } from 'src/modules/activity/entities/activity.entity';
 import { Plan } from 'src/modules/plan/entities/plan.entity';
+import moment from 'moment-timezone';
+
 import {
   Entity,
   PrimaryGeneratedColumn,
@@ -18,7 +20,13 @@ export class Day {
   @JoinColumn({ name: 'plan_id' }) // 외래 키 명시
   plan: Plan;
 
-  @Column({ type: 'timestamp' })
+  @Column({
+    type: 'timestamp',
+    transformer: {
+      to: (value: Date) => moment(value).utc().toDate(), // 저장 시 UTC로 변환
+      from: (value: Date) => moment(value).tz('Asia/Seoul').toDate(), // 읽을 때 로컬 타임존으로 변환
+    },
+  })
   date: Date;
 
   @OneToMany(() => Activity, (activity) => activity.day)
