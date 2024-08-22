@@ -1,3 +1,7 @@
+import { useEffect } from 'react'
+
+import { axiosRequestHandler } from '@/api/http'
+
 import kakaoLoginImage from '../assets/images/kakao_login_medium_narrow.png'
 
 function KakaoSocialButton() {

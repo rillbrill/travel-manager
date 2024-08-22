@@ -1,5 +1,5 @@
 interface IKakaoUserSuccess {
-  acessToken: string
+  accessToken: string
   message: string
   refreshToken: string
   user: {

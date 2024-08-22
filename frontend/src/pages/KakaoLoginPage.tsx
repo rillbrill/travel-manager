@@ -1,24 +1,14 @@
 // import LoadingSpinner from '@/components/common/LoadingSpinner'
 import { useEffect } from 'react'
 
-import { useKakao } from '@/hooks/useKakao'
+import { useKakaoLogin } from '@/hooks/useKakaoLogin'
 // import { IKakaoUserSuccess } from '@/model/kakao.model'
 // import {  IKakaoFail, IKakaoUserSuccess } from '@/model/kakao.model'
 
 function KakaoLoginPage() {
   const code = new URL(window.location.href).searchParams.get('code')!
-  const { userInfo } = useKakao({ code })
 
-  useEffect(() => {
-    if (userInfo?.acessToken) {
-      localStorage.setItem('accessToken', userInfo.acessToken)
-    }
-    if (userInfo?.refreshToken) {
-      localStorage.setItem('refreshToken', userInfo.refreshToken)
-    }
-  }, [userInfo])
-
-  // const [kakaoUser, setKakaoUser] = useState<IKakaoUserSuccess| IKakaoFail | null>(null)
+  useKakaoLogin({ code })
 
   return (
     <div className="mx-auto flex h-screen w-full items-center justify-center border-none outline-none">
