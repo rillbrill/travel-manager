@@ -14,6 +14,7 @@ import { PlanModule } from './modules/plan/plan.module';
 
 import { Users } from './entities/users.entity';
 import { ConfigModule } from '@nestjs/config';
+import { HttpModule } from '@nestjs/axios';
 import { Plan } from './modules/plan/entities/plan.entity';
 
 @Module({
@@ -31,8 +32,8 @@ import { Plan } from './modules/plan/entities/plan.entity';
       database: process.env.DB_DATABASE,
       entities: [Users, Plan],
       charset: 'utf8mb4_general_ci',
-      synchronize: true,
-      logging: true,
+      synchronize: process.env.NODE_ENV === 'development',
+      logging: process.env.NODE_ENV === 'development',
       migrations: [__dirname + '/migrations/**/*{.ts,.js}'],
     }),
     JwtModule.register({
@@ -41,6 +42,10 @@ import { Plan } from './modules/plan/entities/plan.entity';
       signOptions: {
         expiresIn: process.env.JWT_ACCESS_EXPIRATION,
       },
+    }),
+    HttpModule.register({
+      timeout: 5000,
+      maxRedirects: 5,
     }),
     AuthModule,
     UsersModule,
