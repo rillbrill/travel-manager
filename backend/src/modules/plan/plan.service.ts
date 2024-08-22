@@ -17,7 +17,12 @@ export class PlanService {
   }
 
   async findAll(): Promise<Plan[]> {
-    return this.planRepository.find();
+    return this.planRepository.find({
+      order: {
+        plan_end: 'ASC',
+        start_date: 'ASC',
+      },
+    });
   }
 
   findOne(id: number) {

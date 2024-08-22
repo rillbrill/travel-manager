@@ -32,9 +32,9 @@ import { Plan } from './modules/plan/entities/plan.entity';
       database: process.env.DB_DATABASE,
       entities: [Users, Plan],
       charset: 'utf8mb4_general_ci',
-      synchronize: process.env.NODE_ENV === 'development',
+      synchronize: false,
       logging: process.env.NODE_ENV === 'development',
-      migrations: [__dirname + '/migrations/**/*{.ts,.js}'],
+      migrations: [__dirname + '/migrations/**/*{.ts,.js}']
     }),
     JwtModule.register({
       global: true,
