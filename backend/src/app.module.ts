@@ -31,7 +31,7 @@ import { ConfigModule } from '@nestjs/config';
       database: process.env.DB_DATABASE,
       entities: [__dirname + '/**/*.entity.{js,ts}'],
       charset: 'utf8mb4_general_ci',
-      synchronize: true,
+      synchronize: false,
       logging: true,
       migrations: [__dirname + '/migrations/**/*{.ts,.js}'],
     }),
