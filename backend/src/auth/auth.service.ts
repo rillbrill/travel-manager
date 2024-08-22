@@ -1,4 +1,5 @@
 import {
+  ForbiddenException,
   Injectable,
   NotFoundException,
   UnauthorizedException,
@@ -13,10 +14,10 @@ import { UserType } from './model/auth.types';
 import {
   CreateUserDto,
   KakaoLoginResponseDto,
-  KakaoUserInfoDto,
   UpdateUserDto,
   UserDto,
 } from './dto/auth.dto';
+import axios from 'axios';
 
 @Injectable()
 export class AuthService {
@@ -29,9 +30,12 @@ export class AuthService {
 
   // 카카오 로그인 이후 처리
   async loginWithKakao(
-    kakaoUserInfo: KakaoUserInfoDto,
+    kakaoAccessToken: string,
   ): Promise<KakaoLoginResponseDto> {
+    const kakaoUserInfo = await this.getKakaoUserInfo(kakaoAccessToken);
+
     const { kakaoId, nickname, email, profileImage } = kakaoUserInfo;
+
     if (!kakaoId) {
       throw new UnauthorizedException('카카오 ID를 찾을 수 없습니다.');
     }
@@ -51,6 +55,20 @@ export class AuthService {
     await this.updateUser(user.id, { refreshToken: hashedRefreshToken });
 
     return { user: this.toUserDto(user), accessToken, refreshToken };
+  }
+
+  // 카카오 사용자 정보 가져오기
+  private async getKakaoUserInfo(accessToken: string): Promise<any> {
+    try {
+      const response = await axios.get('https://kapi.kakao.com/v2/user/me', {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      });
+      return response.data;
+    } catch (error) {
+      throw new UnauthorizedException(
+        '카카오 사용자 정보를 가져오는데 실패했습니다.',
+      );
+    }
   }
 
   // DB에 사용자 정보 저장 또는 업데이트
@@ -121,47 +139,18 @@ export class AuthService {
         where: { id: payload.sub },
       });
       if (!user || !user.refreshToken) {
-        throw new UnauthorizedException('유효하지 않은 리프레시 토큰입니다.');
+        throw new ForbiddenException('유효하지 않은 리프레시 토큰입니다.');
       }
       const isRefreshTokenValid = await bcrypt.compare(
         refreshToken,
         user.refreshToken,
       );
       if (!isRefreshTokenValid) {
-        throw new UnauthorizedException('유효하지 않은 리프레시 토큰입니다.');
+        throw new ForbiddenException('유효하지 않은 리프레시 토큰입니다.');
       }
       return user;
     } catch (error) {
-      throw new UnauthorizedException(
-        '리프레시 토큰 검증 중 오류가 발생했습니다.',
-      );
-    }
-  }
-
-  // 토큰 유효성 검사
-  async validateToken(
-    token: string,
-    isAccessToken: boolean = true,
-  ): Promise<Users> {
-    try {
-      const secret = isAccessToken
-        ? this.configService.get<string>('JWT_ACCESS_SECRET')
-        : this.configService.get<string>('JWT_REFRESH_SECRET');
-
-      const payload = this.jwtService.verify(token, { secret });
-      const user = await this.userRepository.findOne({
-        where: { id: payload.sub },
-      });
-
-      if (!user) {
-        throw new UnauthorizedException('사용자를 찾을 수 없습니다.');
-      }
-      return user;
-    } catch (error) {
-      if (error.name === 'TokenExpiredError') {
-        throw new UnauthorizedException('토큰이 만료되었습니다.');
-      }
-      throw new UnauthorizedException('유효하지 않은 토큰입니다.');
+      throw new ForbiddenException('유효하지 않은 리프레시 토큰입니다.');
     }
   }
 
@@ -192,8 +181,8 @@ export class AuthService {
     return userWithoutRefreshToken;
   }
 
-  // 로그아웃 시 리프레시 토큰 삭제
-  async removeRefreshTokenOnLogout(userId: number) {
+  // 리프레시 토큰 삭제
+  async removeRefreshToken(userId: number) {
     await this.updateUser(userId, { refreshToken: null });
   }
 }

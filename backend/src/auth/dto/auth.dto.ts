@@ -15,13 +15,6 @@ export class UpdateUserDto extends PartialType(
   OmitType(Users, ['id', 'socialId', 'type'] as const),
 ) {}
 
-export class KakaoUserInfoDto {
-  kakaoId: string;
-  nickname?: string;
-  email?: string;
-  profileImage?: string;
-}
-
 export class KakaoLoginResponseDto {
   user: UserDto;
   accessToken: string;

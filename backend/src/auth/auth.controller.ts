@@ -8,6 +8,7 @@ import {
   HttpStatus,
   HttpCode,
   UnauthorizedException,
+  Res,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { ConfigService } from '@nestjs/config';
@@ -23,11 +24,14 @@ import { AuthGuard } from '@nestjs/passport';
 @ApiTags('인증')
 @Controller('api/auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly configService: ConfigService,
+  ) {}
 
   @ApiOperation({
     summary: '카카오 로그인',
-    description: '카카오 로그인 후 사용자 정보 및 JWT 토큰을 반환합니다.',
+    description: '카카오 인증 후 사용자 정보 및 JWT 토큰을 반환합니다.',
   })
   @ApiResponse({
     status: HttpStatus.OK,
@@ -55,17 +59,25 @@ export class AuthController {
     schema: {
       example: {
         message: '카카오 로그인 실패',
-        error: '유효하지 않은 카카오 토큰입니다.',
+        error: '에러메시지',
       },
     },
   })
-  @Get('kakao')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        kakaoAccessToken: { type: 'string' },
+      },
+    },
+  })
+  @Post('kakao')
   // @UseGuards(AuthGuard('kakao'))
   @HttpCode(HttpStatus.OK)
-  async kakaoCallback(@Req() req) {
+  async kakaoLogin(@Body() body: { kakaoAccessToken: string }) {
     try {
       const { user, accessToken, refreshToken } =
-        await this.authService.loginWithKakao(req.user);
+        await this.authService.loginWithKakao(body.kakaoAccessToken);
 
       return {
         statusCode: HttpStatus.OK,
@@ -143,7 +155,7 @@ export class AuthController {
   @Post('logout')
   @HttpCode(HttpStatus.OK)
   async logout(@Body() body: { userId: number }) {
-    await this.authService.removeRefreshTokenOnLogout(body.userId);
+    await this.authService.removeRefreshToken(body.userId);
     return {
       message: '로그아웃 성공',
     };
@@ -186,7 +198,7 @@ export class AuthController {
   })
   @Post('refresh')
   @HttpCode(HttpStatus.OK)
-  async refreshTokens(@Body() body: { refreshToken: string }) {
+  async refreshTokens(@Body() body: { refreshToken: string }, @Res() res) {
     try {
       const { refreshToken } = body;
       if (!refreshToken) {
@@ -196,8 +208,9 @@ export class AuthController {
         await this.authService.refreshAccessToken(refreshToken);
       return { accessToken };
     } catch (error) {
-      //TODO: 클라이언트 리디렉트 추가
-      throw new UnauthorizedException('유효하지 않은 리프레시 토큰입니다.');
+      // 로그인 페이지로 리디렉션
+      const clientDomain = this.configService.get<string>('CLIENT_DOMAIN');
+      return res.redirect(`${clientDomain}/login`);
     }
   }
 }

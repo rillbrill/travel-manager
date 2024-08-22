@@ -31,7 +31,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       return user;
     } catch (error) {
       this.logger.error(`토큰 검증 오류: ${error.message}`);
-      throw new UnauthorizedException('유효하지 않은 토큰입니다.');
+      throw new UnauthorizedException('유효하지 않은 액세스 토큰입니다.');
     }
   }
 }
