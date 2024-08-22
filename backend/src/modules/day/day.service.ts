@@ -1,4 +1,9 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  forwardRef,
+  Inject,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateDayDto } from './dto/create-day.dto';
 import { UpdateDayDto } from './dto/update-day.dto';
 import { Between, Repository } from 'typeorm';
@@ -11,7 +16,7 @@ export class DayService {
   constructor(
     @InjectRepository(Day)
     private readonly dayRepository: Repository<Day>,
-
+    @Inject(forwardRef(() => PlanService))
     private readonly planService: PlanService,
   ) {}
 

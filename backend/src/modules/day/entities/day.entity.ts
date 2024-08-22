@@ -21,12 +21,6 @@ export class Day {
   @Column({ type: 'timestamp' })
   date: Date;
 
-  @Column({ type: 'varchar', length: 255 })
-  day_city: string;
-
-  @Column({ type: 'varchar', length: 255 })
-  day_loc: string;
-
   @OneToMany(() => Activity, (activity) => activity.day)
   activities: Activity[];
 }
