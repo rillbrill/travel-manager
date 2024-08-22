@@ -17,8 +17,8 @@ export function getToken(tokenName: TTokenName) {
   return token
 }
 
-export function setToken(tokenValue: string, tokenName: TTokenName) {
-  localStorage.setItem(tokenName, tokenValue)
+export function setToken(tokenName: TTokenName, tokenValue: string) {
+  localStorage.setItem(tokenValue, tokenName)
 }
 
 export function removeToken(tokenName: TTokenName) {
@@ -33,7 +33,7 @@ export const useAuthStore = create<TStoreState & TStoreAction>()(
         set((state: TStoreState) => {
           state.isLoggedIn = true
 
-          setToken(tokenValue, tokenName)
+          setToken(tokenName, tokenValue)
         }),
       authLogout: (tokenName: TTokenName) =>
         set((state: TStoreState) => {
