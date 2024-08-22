@@ -9,6 +9,7 @@ import {
   HttpCode,
   UnauthorizedException,
   Res,
+  Query,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { ConfigService } from '@nestjs/config';
