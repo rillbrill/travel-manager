@@ -14,6 +14,7 @@ import { PlanModule } from './modules/plan/plan.module';
 
 import { Users } from './entities/users.entity';
 import { ConfigModule } from '@nestjs/config';
+import { Plan } from './modules/plan/entities/plan.entity';
 
 @Module({
   imports: [
@@ -28,7 +29,7 @@ import { ConfigModule } from '@nestjs/config';
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_DATABASE,
-      entities: [Users],
+      entities: [Users, Plan],
       charset: 'utf8mb4_general_ci',
       synchronize: true,
       logging: true,
