@@ -6,10 +6,10 @@ import { cn } from '@/utils/cn'
 type Props = {
   currentTab: DaysTabEnum
   changeCurrentTab: (tab: DaysTabEnum) => void
-  addForm: () => void
+  openForm: () => void
 }
 
-function DayTabs({ currentTab, changeCurrentTab, addForm }: Props) {
+function DayTabs({ currentTab, changeCurrentTab, openForm }: Props) {
   return (
     <div className="flex items-center justify-between">
       <div className="flex">
@@ -29,7 +29,7 @@ function DayTabs({ currentTab, changeCurrentTab, addForm }: Props) {
         ))}
       </div>
 
-      <button onClick={addForm}>
+      <button onClick={openForm}>
         <FiPlusSquare className="text-2xl text-primary-default" />
       </button>
     </div>

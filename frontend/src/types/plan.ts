@@ -35,9 +35,10 @@ export type Activity = {
   planId: string
   dayId: string
   activityName: string
-  activityPlaceName: string
-  activityDetail: string
-  activityExpense: number
+  activityLocation: string | null
+  activityDetail: string | null
+  activityExpenses: number | null
+  category: string | null
 }
 
 export type Day = {
@@ -56,3 +57,5 @@ export type DayCategory = {
 }
 
 export type DaysResDto = Day[]
+
+export type ActivityReqDto = Omit<Activity, 'id' | 'planId' | 'dayId'>

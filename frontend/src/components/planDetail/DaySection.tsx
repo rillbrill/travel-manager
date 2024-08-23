@@ -23,8 +23,11 @@ function DaySection({ day, dayIndex }: Props) {
     setCurrentTab(tab)
     setShowForm(false)
   }
-  const addForm = () => {
+  const openForm = () => {
     setShowForm(true)
+  }
+  const closeForm = () => {
+    setShowForm(false)
   }
 
   return (
@@ -43,15 +46,17 @@ function DaySection({ day, dayIndex }: Props) {
         <DayTabs
           currentTab={currentTab}
           changeCurrentTab={changeCurrentTab}
-          addForm={addForm}
+          openForm={openForm}
         />
 
         {/* content */}
+        {showForm && (
+          <ActivityForm handleCancel={closeForm} handleSave={() => {}} />
+        )}
         {currentTab === DaysTabEnum.Activity && (
           <ActivityList activities={activities} />
         )}
         {currentTab === DaysTabEnum.Expense && <ExpenseTable />}
-        {showForm && <ActivityForm />}
       </div>
     </div>
   )
