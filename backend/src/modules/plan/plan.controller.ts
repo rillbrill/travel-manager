@@ -35,6 +35,11 @@ export class PlanController {
     return this.planService.findAllDaysAndActivities(planId);
   }
 
+  @Get(':id/currency')
+  async getCurrencyCode(@Param('id') id: string): Promise<string> {
+    return this.planService.getCurrencyCode(id);
+  }
+
   @Put(':id')
   update(@Param('id') id: string, @Body() updatePlanDto: UpdatePlanDto) {
     return this.planService.update(id, updatePlanDto);
