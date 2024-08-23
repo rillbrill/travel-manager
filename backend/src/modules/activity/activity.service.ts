@@ -58,32 +58,30 @@ export class ActivityService {
     await this.planService.updateExpenses(planId, sum || 0);
   }
 
-  async create(
+  async createActivity(
     planId: string,
     dayId: string,
     createDayActivityDto: CreateActivityDto,
+    isActivity: boolean,
   ) {
-    // 최대 order 값 조회
     const maxOrderResult = await this.activityRepository
       .createQueryBuilder('activity')
       .select('MAX(activity.order)', 'maxOrder')
       .where('activity.day_id = :dayId', { dayId })
       .getRawOne();
 
-    // 최대 order 값이 없으면 (즉, 테이블이 비어 있으면) newOrder를 1로 설정
     const maxOrder = maxOrderResult.maxOrder;
     const newOrder = maxOrder ? maxOrder + 1 : 1;
 
-    // 새 활동 생성
     const dayActivity = this.activityRepository.create({
       ...createDayActivityDto,
       day: { id: dayId, plan: { id: planId } },
+      isActivity: isActivity,
       order: newOrder,
     });
 
     const savedActivity = await this.activityRepository.save(dayActivity);
 
-    // 총 비용 업데이트 (필요한 경우)
     await this.updatePlanTotalExpenses(planId);
 
     return savedActivity;

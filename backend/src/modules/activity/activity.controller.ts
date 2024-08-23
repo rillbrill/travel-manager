@@ -39,14 +39,34 @@ export class ActivityController {
     return this.activityService.findOne(planId, dayId, activityId);
   }
 
-  // 단일 생성
+  // isActivity가 true인 활동 생성
   @Post()
-  create(
+  createActivity(
     @Param('planId') planId: string,
     @Param('dayId') dayId: string,
     @Body() createDayActivityDto: CreateActivityDto,
   ) {
-    return this.activityService.create(planId, dayId, createDayActivityDto);
+    return this.activityService.createActivity(
+      planId,
+      dayId,
+      createDayActivityDto,
+      true,
+    );
+  }
+
+  // isActivity가 false인 활동 생성
+  @Post('expenses')
+  createNonActivity(
+    @Param('planId') planId: string,
+    @Param('dayId') dayId: string,
+    @Body() createDayActivityDto: CreateActivityDto,
+  ) {
+    return this.activityService.createActivity(
+      planId,
+      dayId,
+      createDayActivityDto,
+      false,
+    );
   }
 
   // 단일 수정
