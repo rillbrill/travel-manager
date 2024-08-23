@@ -59,7 +59,39 @@ export class PlanService {
   }
 
   async update(id: string, updatePlanDto: UpdatePlanDto): Promise<Plan> {
-    await this.planRepository.update(id, updatePlanDto);
+    const existingPlan = await this.findOne(id);
+
+    const { start_date, end_date, ...rest } = updatePlanDto;
+
+    if (start_date || end_date) {
+      // 기존 날짜 범위에서 벗어난 날짜의 Day 삭제
+      const oldDays = await this.dayService.findAll(id);
+      const newStartDate = new Date(start_date || existingPlan.start_date);
+      const newEndDate = new Date(end_date || existingPlan.end_date);
+
+      for (const day of oldDays) {
+        const dayDate = new Date(day.date);
+        if (dayDate < newStartDate || dayDate > newEndDate) {
+          await this.dayService.remove(id, day.id); // Day 삭제 시, 연동된 Activity도 함께 삭제됨
+        }
+      }
+
+      // 새로 추가된 날짜의 Day 추가
+      const currentDate = newStartDate;
+      while (currentDate <= newEndDate) {
+        const dayExists = oldDays.some(
+          (day) =>
+            new Date(day.date).toISOString().split('T')[0] ===
+            currentDate.toISOString().split('T')[0],
+        );
+        if (!dayExists) {
+          await this.dayService.create(id, { date: currentDate });
+        }
+        currentDate.setDate(currentDate.getDate() + 1);
+      }
+    }
+
+    await this.planRepository.update(id, { ...rest, start_date, end_date });
     const updatedPlan = await this.findOne(id);
     if (!updatedPlan) {
       throw new NotFoundException(`Plan with ID ${id} not found`);
@@ -72,5 +104,9 @@ export class PlanService {
     if (!deleteResult.affected) {
       throw new NotFoundException(`Plan with ID ${id} not found`);
     }
+  }
+
+  async updateExpenses(planId: string, totalExpenses: number): Promise<void> {
+    await this.planRepository.update(planId, { total_expenses: totalExpenses });
   }
 }

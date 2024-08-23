@@ -1,25 +1,34 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  forwardRef,
+  Inject,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Activity } from './entities/activity.entity';
 import { CreateActivityDto } from './dto/create-activity.dto';
 import { UpdateActivityDto } from './dto/update-activity.dto';
+import { PlanService } from '../plan/plan.service';
 
 @Injectable()
 export class ActivityService {
   constructor(
     @InjectRepository(Activity)
-    private readonly dayActivityRepository: Repository<Activity>,
+    private readonly activityRepository: Repository<Activity>,
+
+    @Inject(forwardRef(() => PlanService))
+    private readonly planService: PlanService,
   ) {}
 
   async findAll(planId: string, dayId: string) {
-    return await this.dayActivityRepository.find({
+    return await this.activityRepository.find({
       where: { day: { id: dayId, plan: { id: planId } } },
     });
   }
 
   async findOne(planId: string, dayId: string, activityId: string) {
-    const activity = await this.dayActivityRepository.findOne({
+    const activity = await this.activityRepository.findOne({
       where: { id: activityId, day: { id: dayId, plan: { id: planId } } },
     });
     if (!activity) {

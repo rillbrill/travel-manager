@@ -29,6 +29,9 @@ export class Day {
   })
   date: Date;
 
-  @OneToMany(() => Activity, (activity) => activity.day)
+  @OneToMany(() => Activity, (activity) => activity.day, {
+    cascade: true,
+    onDelete: 'CASCADE',
+  })
   activities: Activity[];
 }
