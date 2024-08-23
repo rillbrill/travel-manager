@@ -14,3 +14,10 @@ export enum DateFormatTypeEnum {
   YearAndMonth = 'yyyy.MM',
   MonthAndDay = 'MM.dd',
 }
+
+export enum HttpStatusCodeEnum {
+  UnAuthorized = 401,
+  Forbbiden = 403,
+  NotFound = 404,
+  OK = 200,
+}

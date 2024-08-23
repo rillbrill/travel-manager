@@ -1,34 +1,57 @@
-import axios, { AxiosRequestConfig } from 'axios'
+import { AxiosRequestConfig, AxiosResponse } from 'axios'
 
-const BASE_URL = 'http://localhost:3333/'
-const API_TIMEOUT = 50000
+import { httpClient } from './setting'
 
-export const createClient = (config?: AxiosRequestConfig) => {
-  const axiosInstance = axios.create({
-    baseURL: BASE_URL,
-    timeout: API_TIMEOUT,
-    headers: {
-      'Content-Type': 'application/json',
-      // getToken 추후 추가
-    },
-    withCredentials: true,
-    ...config,
-  })
+type TMethods = 'get' | 'post' | 'put' | 'delete'
 
-  axios.interceptors.response.use(
-    (response) => {
-      return response
-    },
-    (error) => {
-      // errror 상세히 처리
-      /**
-       * - 토큰 만료,
-       *  : window.location.href = '/login' 으로 처리 고민
-       */
-      return Promise.reject(error)
-    }
-  )
-  return axiosInstance
+interface TRequestHandlerArgs<T = void> {
+  method: TMethods
+  url: string
+  data?: T
+  config?: AxiosRequestConfig
 }
 
-export const httpClient = createClient()
+/**
+ * T : response Data Type
+ * U : Request Data Type
+ * @returns
+ */
+export const axiosRequestHandler = async <T, U = void>({
+  method,
+  url,
+  data,
+  config,
+}: TRequestHandlerArgs<U>): Promise<AxiosResponse<T>> => {
+  let response: AxiosResponse<T>
+
+  switch (method) {
+    case 'get': {
+      response = await httpClient.get<T>(url, config)
+      break
+    }
+    case 'post': {
+      response = await httpClient.post<T>(url, data, config)
+      break
+    }
+    case 'delete': {
+      response = await httpClient.delete<T>(url, config)
+      break
+    }
+    case 'put': {
+      response = await httpClient.put<T>(url, data, config)
+      break
+    }
+    default:
+      throw new Error(`Unsupported method: ${method}`)
+  }
+  // console.log(response.config.headers)
+  return response
+  /**
+   * response reuturn
+   * data : response data
+   * status,
+   * headers
+   * statusText
+   * config
+   */
+}

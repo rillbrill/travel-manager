@@ -1,7 +1,7 @@
 import { Dispatch, SetStateAction } from 'react'
 import { FiX } from 'react-icons/fi'
 
-import { randomBgColorClassNames } from '@/constants/colors'
+import { randomBgColorClassNames } from '@/constants'
 import { DateFormatTypeEnum } from '@/types'
 import { NullableDate, Place } from '@/types/plan'
 import { cn } from '@/utils/cn'

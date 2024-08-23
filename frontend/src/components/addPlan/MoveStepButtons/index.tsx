@@ -20,6 +20,11 @@ function MoveStepButtons({ stepIndex, isValid, moveStep }: Props) {
     moveStep(stepIndex - 1)
   }
   const moveToNextStep = () => {
+    if (isLastStep) {
+      // TODO: api call
+      return
+    }
+
     moveStep(stepIndex + 1)
   }
 

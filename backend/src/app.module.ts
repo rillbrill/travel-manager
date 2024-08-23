@@ -15,6 +15,9 @@ import { DayModule } from './modules/day/day.module';
 import { ActivityModule } from './modules/activity/activity.module';
 
 import { ConfigModule } from '@nestjs/config';
+import { HttpModule } from '@nestjs/axios';
+import { CountryModule } from './modules/country/country.module';
+import { CityModule } from './modules/city/city.module';
 
 @Module({
   imports: [
@@ -32,7 +35,7 @@ import { ConfigModule } from '@nestjs/config';
       entities: [__dirname + '/**/*.entity.{js,ts}'],
       charset: 'utf8mb4_general_ci',
       synchronize: false,
-      logging: true,
+      logging: process.env.NODE_ENV === 'development',
       migrations: [__dirname + '/migrations/**/*{.ts,.js}'],
     }),
     JwtModule.register({
@@ -42,6 +45,10 @@ import { ConfigModule } from '@nestjs/config';
         expiresIn: process.env.JWT_ACCESS_EXPIRATION,
       },
     }),
+    HttpModule.register({
+      timeout: 5000,
+      maxRedirects: 5,
+    }),
     AuthModule,
     UsersModule,
     CurrencyModule,
@@ -50,6 +57,8 @@ import { ConfigModule } from '@nestjs/config';
     PlanModule,
     DayModule,
     ActivityModule,
+    CountryModule,
+    CityModule,
   ],
   controllers: [AppController],
   providers: [AppService],
