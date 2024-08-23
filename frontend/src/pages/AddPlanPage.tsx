@@ -8,14 +8,14 @@ import SetPlaceAndDateForm from '@/components/addPlan/SetPlaceAndDateForm'
 import Stepper from '@/components/addPlan/Stepper'
 import { usePlanStore } from '@/store/plan'
 import { AddPlanStepEnum } from '@/types'
-import { Plan } from '@/types/plan'
+import { AddPlanReqDto } from '@/types/plan'
 
 function AddPlanPage() {
   const [currentStep, setCurrentStep] = useState<number>(
     AddPlanStepEnum.SetInfo
   )
   const { plan } = usePlanStore()
-  const methods = useForm<Partial<Plan>>({
+  const methods = useForm<Partial<AddPlanReqDto>>({
     defaultValues: plan,
     mode: 'onChange',
   })
@@ -26,15 +26,9 @@ function AddPlanPage() {
   const isValid = useMemo(() => {
     switch (currentStep) {
       case AddPlanStepEnum.SetInfo:
-        return !errors.name && !errors.headCount
+        return !errors.planCountry && !errors.headCount
       case AddPlanStepEnum.SetPlaceAndDate:
-        return (
-          !!plan.startDate &&
-          !!plan.endDate &&
-          plan.places.length > 0 &&
-          plan.places.filter((elem) => !elem.startDate || !elem.endDate)
-            .length === 0
-        )
+        return !!plan.startDate && !!plan.endDate && !!plan.planCountry
       case AddPlanStepEnum.CheckPlan:
         return true
     }

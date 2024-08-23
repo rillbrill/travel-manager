@@ -1,12 +1,11 @@
 import { Button, Modal } from '@/components/common'
-import { Place } from '@/types/plan'
 
 type Props = {
   closeModal: () => void
-  addPlace: (newPlace: Place) => void
+  selectPlace: (place: string) => void
 }
 
-const dummyPlaces: Place[] = [
+const dummyPlaces = [
   {
     id: 0,
     place: '서울, 대한민국',
@@ -45,7 +44,8 @@ const dummyPlaces: Place[] = [
   },
 ]
 
-function SelectPlaceModal({ closeModal, addPlace }: Props) {
+function SelectPlaceModal({ closeModal, selectPlace }: Props) {
+  // TODO: place list api call
   return (
     <Modal title="여행지 선택" closeModal={closeModal}>
       <div className="flex max-h-52 flex-col gap-y-3 overflow-y-auto">
@@ -56,7 +56,7 @@ function SelectPlaceModal({ closeModal, addPlace }: Props) {
               type="button"
               isFull={false}
               className="border border-blue-500 bg-gray-50 px-3 py-1 text-blue-500"
-              onClick={() => addPlace(elem)}
+              onClick={() => selectPlace(elem.place)}
             >
               선택
             </Button>

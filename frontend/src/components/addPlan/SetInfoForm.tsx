@@ -6,8 +6,8 @@ import { usePlanStore } from '@/store/plan'
 
 function SetInfoForm() {
   const {
-    plan: { name, headCount },
-    setName,
+    plan: { planName, headCount },
+    setPlanName: setName,
     setHeadCount,
   } = usePlanStore()
   const {
@@ -30,8 +30,8 @@ function SetInfoForm() {
         }) => (
           <Input
             type="text"
-            defaultValue={name}
-            value={name}
+            defaultValue={planName}
+            value={planName}
             label="여행명"
             placeholder="여행명을 입력해주세요"
             errorMessage={errors.name && error?.message}

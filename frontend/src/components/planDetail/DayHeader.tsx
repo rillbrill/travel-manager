@@ -7,11 +7,10 @@ type Props = {
   dayIndex: number
   date: Date
   country: string
-  city: string
   totalExpense: number
 }
 
-function DayHeader({ dayIndex, date, country, city, totalExpense }: Props) {
+function DayHeader({ dayIndex, date, country, totalExpense }: Props) {
   return (
     <div className="flex flex-col gap-y-1">
       <div className="flex items-center justify-between">
@@ -31,9 +30,7 @@ function DayHeader({ dayIndex, date, country, city, totalExpense }: Props) {
           </span>
         </div>
 
-        <span className="text-sm text-gray-600">
-          {country} {city}
-        </span>
+        <span className="text-sm text-gray-600">{country}</span>
       </div>
       <p className="text-right text-sm text-gray-600">
         💰 예상 경비: {totalExpense.toLocaleString()}원
