@@ -43,8 +43,10 @@ const Input = forwardRef<HTMLInputElement, Props>(
     }
 
     return (
-      <div className="relative flex w-full flex-col gap-y-2">
-        {!!label && <label className="text-sm text-gray-500">{label}</label>}
+      <div className="flex w-full flex-col gap-y-1">
+        {!!label && (
+          <label className="mb-1 text-sm text-gray-500">{label}</label>
+        )}
         {/* text type input */}
         {type === 'text' && (
           <input
@@ -88,9 +90,7 @@ const Input = forwardRef<HTMLInputElement, Props>(
           </div>
         )}
         {!!errorMessage && (
-          <p className="absolute bottom-[-24px] left-0 text-sm text-red-500">
-            {errorMessage}
-          </p>
+          <p className="text-sm text-red-500">{errorMessage}</p>
         )}
       </div>
     )

@@ -16,7 +16,7 @@ function SetInfoForm() {
   } = useFormContext()
 
   return (
-    <div className="flex flex-col gap-y-8">
+    <div className="flex flex-col gap-y-4">
       <Controller
         name="name"
         control={control}
