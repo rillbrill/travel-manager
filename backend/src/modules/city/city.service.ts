@@ -20,8 +20,9 @@ export class CityService {
     return 'This action adds a new city';
   }
 
-  findAll() {
-    return `This action returns all city`;
+  async findAll() {
+    const cities = await this.cityRepository.find({ relations: ['country'] });
+    return cities.map(city => this.transformToResponseDto(city));
   }
 
   async findOne(id: number) {
