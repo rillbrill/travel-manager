@@ -125,30 +125,30 @@ export const randomBgColorClassNames = [
 export const dayCategories: DayCategory[] = [
   {
     name: DayCategoryEnum.Activity,
-    color: '#A9C6F1',
+    color: 'bg-[#A9C6F1]',
   },
   {
     name: DayCategoryEnum.Accommodation,
-    color: '#90BA8A',
+    color: 'bg-[#90BA8A]',
   },
   {
     name: DayCategoryEnum.Breakfast,
-    color: '#A3D4CC',
+    color: 'bg-[#A3D4CC]',
   },
   {
     name: DayCategoryEnum.Lunch,
-    color: '#FEE2E2',
+    color: 'bg-[#FEE2E2]',
   },
   {
     name: DayCategoryEnum.Dinner,
-    color: '#FEF08A',
+    color: 'bg-[#FEF08A]',
   },
   {
     name: DayCategoryEnum.Cafe,
-    color: '#F9C7F7',
+    color: 'bg-[#F9C7F7]',
   },
   {
     name: DayCategoryEnum.Etc,
-    color: '#D9D9D9',
+    color: 'bg-[#D9D9D9]',
   },
 ]
