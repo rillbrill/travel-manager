@@ -21,11 +21,32 @@ export class ActivityService {
     private readonly planService: PlanService,
   ) {}
 
-  async findAll(planId: string, dayId: string) {
-    return await this.activityRepository.find({
-      where: { day: { id: dayId, plan: { id: planId } } },
-      order: { order: 'ASC' }, // order 컬럼을 오름차순으로 정렬
-    });
+  async findAll(
+    planId: string,
+    dayId: string,
+    isActivity?: boolean,
+    category?: string,
+  ) {
+    const queryBuilder = this.activityRepository
+      .createQueryBuilder('activity')
+      .leftJoin('activity.day', 'day')
+      .leftJoin('day.plan', 'plan')
+      .where('day.id = :dayId', { dayId })
+      .andWhere('plan.id = :planId', { planId });
+
+    if (isActivity !== undefined) {
+      queryBuilder.andWhere('activity.isActivity = :isActivity', {
+        isActivity,
+      });
+    }
+
+    if (category) {
+      queryBuilder.andWhere('activity.category = :category', { category });
+    }
+
+    queryBuilder.orderBy('activity.order', 'ASC');
+
+    return await queryBuilder.getMany();
   }
 
   async findOne(planId: string, dayId: string, activityId: string) {

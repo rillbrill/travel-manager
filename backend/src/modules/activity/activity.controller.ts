@@ -16,17 +16,25 @@ import { UpdateActivityDto } from './dto/update-activity.dto';
 export class ActivityController {
   constructor(private readonly activityService: ActivityService) {}
 
-  // 전체 조회
+  // 전체 조회, 카테고리별 조회, 일정/경비탭 조회
   @Get()
   findAll(
     @Param('planId') planId: string,
     @Param('dayId') dayId: string,
+    @Query('isActivity') isActivity?: string,
     @Query('category') category?: string,
   ) {
-    if (category) {
-      return this.activityService.findByCategory(planId, dayId, category);
-    }
-    return this.activityService.findAll(planId, dayId);
+    // isActivity가 제공된 경우 문자열을 boolean으로 변환, 제공되지 않으면 undefined
+    const isActivityBoolean =
+      isActivity === 'true' ? true : isActivity === 'false' ? false : undefined;
+
+    // 쿼리 파라미터에 따른 활동 조회
+    return this.activityService.findAll(
+      planId,
+      dayId,
+      isActivityBoolean,
+      category,
+    );
   }
 
   // 단일 조회
