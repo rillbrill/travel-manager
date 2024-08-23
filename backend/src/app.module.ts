@@ -16,6 +16,10 @@ import { Users } from './entities/users.entity';
 import { ConfigModule } from '@nestjs/config';
 import { HttpModule } from '@nestjs/axios';
 import { Plan } from './modules/plan/entities/plan.entity';
+import { CountryModule } from './modules/country/country.module';
+import { CityModule } from './modules/city/city.module';
+import { City } from './modules/city/entities/city.entity';
+import { Country } from './modules/country/entities/country.entity';
 
 @Module({
   imports: [
@@ -30,11 +34,11 @@ import { Plan } from './modules/plan/entities/plan.entity';
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_DATABASE,
-      entities: [Users, Plan],
+      entities: [Users, Plan, City, Country],
       charset: 'utf8mb4_general_ci',
       synchronize: false,
       logging: process.env.NODE_ENV === 'development',
-      migrations: [__dirname + '/migrations/**/*{.ts,.js}']
+      migrations: [__dirname + '/migrations/**/*{.ts,.js}'],
     }),
     JwtModule.register({
       global: true,
@@ -53,6 +57,8 @@ import { Plan } from './modules/plan/entities/plan.entity';
     UploadModule,
     CostModule,
     PlanModule,
+    CountryModule,
+    CityModule,
   ],
   controllers: [AppController],
   providers: [AppService],
