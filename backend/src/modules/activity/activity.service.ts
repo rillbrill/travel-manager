@@ -24,6 +24,7 @@ export class ActivityService {
   async findAll(planId: string, dayId: string) {
     return await this.activityRepository.find({
       where: { day: { id: dayId, plan: { id: planId } } },
+      order: { order: 'ASC' }, // order 컬럼을 오름차순으로 정렬
     });
   }
 
@@ -35,6 +36,13 @@ export class ActivityService {
       throw new NotFoundException(`Activity with ID ${activityId} not found`);
     }
     return activity;
+  }
+
+  async findByCategory(planId: string, dayId: string, category: string) {
+    return await this.activityRepository.find({
+      where: { day: { id: dayId, plan: { id: planId } }, category },
+      order: { order: 'ASC' }, // order 컬럼을 오름차순으로 정렬
+    });
   }
 
   private async updatePlanTotalExpenses(planId: string) {

@@ -6,6 +6,7 @@ import {
   Delete,
   Param,
   Body,
+  Query,
 } from '@nestjs/common';
 import { ActivityService } from './activity.service';
 import { CreateActivityDto } from './dto/create-activity.dto';
@@ -17,7 +18,14 @@ export class ActivityController {
 
   // 전체 조회
   @Get()
-  findAll(@Param('planId') planId: string, @Param('dayId') dayId: string) {
+  findAll(
+    @Param('planId') planId: string,
+    @Param('dayId') dayId: string,
+    @Query('category') category?: string,
+  ) {
+    if (category) {
+      return this.activityService.findByCategory(planId, dayId, category);
+    }
     return this.activityService.findAll(planId, dayId);
   }
 
