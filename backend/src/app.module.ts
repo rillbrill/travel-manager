@@ -11,15 +11,13 @@ import { CurrencyModule } from './modules/currency/currency.module';
 import { UploadModule } from './modules/upload/upload.module';
 import { CostModule } from './modules/cost/cost.module';
 import { PlanModule } from './modules/plan/plan.module';
+import { DayModule } from './modules/day/day.module';
+import { ActivityModule } from './modules/activity/activity.module';
 
-import { Users } from './entities/users.entity';
 import { ConfigModule } from '@nestjs/config';
 import { HttpModule } from '@nestjs/axios';
-import { Plan } from './modules/plan/entities/plan.entity';
 import { CountryModule } from './modules/country/country.module';
 import { CityModule } from './modules/city/city.module';
-import { City } from './modules/city/entities/city.entity';
-import { Country } from './modules/country/entities/country.entity';
 
 @Module({
   imports: [
@@ -34,7 +32,7 @@ import { Country } from './modules/country/entities/country.entity';
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_DATABASE,
-      entities: [Users, Plan, City, Country],
+      entities: [__dirname + '/**/*.entity.{js,ts}'],
       charset: 'utf8mb4_general_ci',
       synchronize: false,
       logging: process.env.NODE_ENV === 'development',
@@ -57,6 +55,8 @@ import { Country } from './modules/country/entities/country.entity';
     UploadModule,
     CostModule,
     PlanModule,
+    DayModule,
+    ActivityModule,
     CountryModule,
     CityModule,
   ],

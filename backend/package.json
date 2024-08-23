@@ -57,6 +57,7 @@
     "cross-env": "^7.0.3",
     "ioredis": "^5.4.1",
     "kafkajs": "^2.2.4",
+    "moment-timezone": "^0.5.45",
     "morgan": "^1.10.0",
     "mqtt": "^5.9.1",
     "mysql2": "^3.11.0",

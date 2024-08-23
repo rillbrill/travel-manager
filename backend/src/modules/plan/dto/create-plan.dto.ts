@@ -1,17 +1,21 @@
-import { IsBoolean, IsNumber, IsString } from 'class-validator';
+import { IsBoolean, IsDateString, IsNumber, IsString } from 'class-validator';
+
 export class CreatePlanDto {
-    @IsString()
-    plan_name: string;
+  @IsString()
+  readonly plan_name: string;
 
-    @IsString()
-    plan_country: string;
+  @IsString()
+  readonly plan_country: string;
 
-    @IsNumber()
-    head_count: number;
+  @IsDateString()
+  readonly start_date: string;
 
-    @IsNumber()
-    total_expenses: number;
+  @IsDateString()
+  readonly end_date: string;
 
-    @IsBoolean()
-    plan_end: boolean;
+  @IsNumber()
+  readonly head_count: number;
+
+  @IsBoolean()
+  readonly plan_end: boolean;
 }
