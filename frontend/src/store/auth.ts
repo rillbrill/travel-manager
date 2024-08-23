@@ -18,7 +18,7 @@ export function getToken(tokenName: TTokenName) {
 }
 
 export function setToken(tokenName: TTokenName, tokenValue: string) {
-  localStorage.setItem(tokenValue, tokenName)
+  localStorage.setItem(tokenName, tokenValue)
 }
 
 export function removeToken(tokenName: TTokenName) {
