@@ -8,6 +8,7 @@ import { RiArrowRightDoubleFill } from 'react-icons/ri'
 import { Link } from 'react-router-dom'
 
 import { fetchPlans } from '@/api/plans.api'
+import { PlanInfo } from '@/components/addPlan/PlanInfo'
 import { Plan } from '@/models/plan.model'
 import { routes } from '@/routes'
 import { formatDate, formatNumber } from '@/utils/format'
@@ -24,13 +25,13 @@ function PlanListPage() {
 
   const handleNextPage = () => {
     if (currentPage < totalPages) {
-      setCurrentPage(currentPage + 1)
+      setCurrentPage((prevPage) => prevPage + 1)
     }
   }
 
   const handlePrevPage = () => {
     if (currentPage > 1) {
-      setCurrentPage(currentPage - 1)
+      setCurrentPage((prevPage) => prevPage - 1)
     }
   }
 
@@ -51,45 +52,48 @@ function PlanListPage() {
           <div key={plan.id}>
             {index > 0 &&
               plan.plan_end !== currentPlans[index - 1].plan_end && (
-                <hr className="mx-4 my-4 border-t-2 border-dotted border-gray-400" />
+                <hr className="mx-4 my-1.5 border-t-2 border-dotted border-gray-400" />
               )}
             <li
-              className={`mx-4 rounded-2xl p-4 text-sm shadow-lg ${
+              className={`relative mx-4 rounded-2xl p-4 text-sm shadow-lg ${
                 plan.plan_end ? 'bg-gray-300' : 'bg-primary-50'
               }`}
             >
+              {plan.plan_end && (
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <span className="pointer-events-none rotate-12 transform text-4xl font-bold uppercase text-red-500 opacity-60">
+                    END
+                  </span>
+                </div>
+              )}
               <Link to={routes.plan}>
-                <h2 className="mb-1.5 text-xl font-semibold lg:text-lg">
+                <h2 className="mb-1.5 text-base font-semibold">
                   {plan.plan_name}
                 </h2>
                 <div className="flex justify-between">
-                  <div className="mb-1 flex items-center space-x-2">
+                  <div className="mb-1.5 flex items-center space-x-2">
                     <GiAirplaneDeparture size="20" color="#96948f" />
                     <p>{formatDate(plan.start_date)}</p>
                   </div>
-                  <div className="mb-1 flex items-center">
+                  <div className="mb-1.5 flex items-center">
                     <RiArrowRightDoubleFill size="20" />
                   </div>
-                  <div className="mb-1 flex items-center space-x-2">
+                  <div className="mb-1.5 flex items-center space-x-2">
                     <GiAirplaneArrival size="20" color="#96948f" />
                     <p>{formatDate(plan.end_date)}</p>
                   </div>
                 </div>
-                <div className="mb-1 flex items-center justify-between space-x-2">
-                  <div className="flex space-x-2">
-                    <PiMapPinAreaBold size="18" color="#f00" />
-                    <p className="font-semibold">여행지</p>
-                  </div>
-                  <p>{plan.plan_country}</p>
-                </div>
-                <div className="mb-1 flex items-center justify-between space-x-2">
-                  <div className="flex space-x-2">
-                    <BsPeopleFill size="18" />
-                    <p className="font-semibold">인원</p>
-                  </div>
-                  <p>{plan.head_count}명</p>
-                </div>
-                <div className="mt-1 flex items-center justify-end space-x-4">
+                <PlanInfo
+                  icon={<PiMapPinAreaBold size="18" color="#f00" />}
+                  title="여행지"
+                  content={plan.plan_country}
+                />
+                <PlanInfo
+                  icon={<BsPeopleFill size="18" />}
+                  title="인원"
+                  content={`${plan.head_count}명`}
+                />
+                <div className="mt-1.5 flex items-center justify-end space-x-4">
                   <div className="flex space-x-1">
                     <BiMoneyWithdraw size="20" color="#a88b42" />
                     <p className="font-semibold">예상 경비</p>
@@ -101,7 +105,7 @@ function PlanListPage() {
           </div>
         ))}
       </ul>
-      <div className="flex space-x-4">
+      <div className="fixed bottom-2 space-x-4">
         <button
           onClick={handlePrevPage}
           disabled={currentPage === 1}
