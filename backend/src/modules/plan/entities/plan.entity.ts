@@ -16,7 +16,7 @@ export class Plan {
   @Column({ type: 'int' })
   head_count: number;
 
-  @Column({ type: 'int' })
+  @Column({ type: 'int', default: 0 })
   total_expenses: number;
 
   @Column({

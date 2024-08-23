@@ -37,16 +37,48 @@ export class ActivityService {
     return activity;
   }
 
+  private async updatePlanTotalExpenses(planId: string) {
+    const { sum } = await this.activityRepository
+      .createQueryBuilder('activity')
+      .select('SUM(activity.activity_expenses)', 'sum')
+      .leftJoin('activity.day', 'day')
+      .leftJoin('day.plan', 'plan')
+      .where('plan.id = :planId', { planId })
+      .getRawOne();
+
+    // PlanService를 사용해 총 비용 업데이트
+    await this.planService.updateExpenses(planId, sum || 0);
+  }
+
   async create(
     planId: string,
     dayId: string,
     createDayActivityDto: CreateActivityDto,
   ) {
-    const dayActivity = this.dayActivityRepository.create({
+    // 최대 order 값 조회
+    const maxOrderResult = await this.activityRepository
+      .createQueryBuilder('activity')
+      .select('MAX(activity.order)', 'maxOrder')
+      .where('activity.day_id = :dayId', { dayId })
+      .getRawOne();
+
+    // 최대 order 값이 없으면 (즉, 테이블이 비어 있으면) newOrder를 1로 설정
+    const maxOrder = maxOrderResult.maxOrder;
+    const newOrder = maxOrder ? maxOrder + 1 : 1;
+
+    // 새 활동 생성
+    const dayActivity = this.activityRepository.create({
       ...createDayActivityDto,
       day: { id: dayId, plan: { id: planId } },
+      order: newOrder,
     });
-    return await this.dayActivityRepository.save(dayActivity);
+
+    const savedActivity = await this.activityRepository.save(dayActivity);
+
+    // 총 비용 업데이트 (필요한 경우)
+    await this.updatePlanTotalExpenses(planId);
+
+    return savedActivity;
   }
 
   async update(
@@ -60,7 +92,57 @@ export class ActivityService {
       throw new NotFoundException(`Activity with ID ${activityId} not found`);
     }
     Object.assign(activity, updateDayActivityDto);
-    return await this.dayActivityRepository.save(activity);
+    const updatedActivity = await this.activityRepository.save(activity);
+
+    await this.updatePlanTotalExpenses(planId);
+
+    return updatedActivity;
+  }
+
+  async updateActivityOrder(
+    planId: string,
+    dayId: string,
+    activityId: string,
+    newOrder: number,
+  ) {
+    // 현재 활동들의 순서를 가져오기
+    const existingActivities = await this.activityRepository.find({
+      where: { day: { id: dayId, plan: { id: planId } } },
+      order: { order: 'ASC' },
+    });
+
+    // 새로운 활동 순서가 유효한 범위인지 확인
+    const maxOrder = existingActivities.length;
+    newOrder = Math.max(1, Math.min(newOrder, maxOrder)); // 순서를 1부터 maxOrder까지로 제한
+
+    // 현재 순서를 가진 활동이 존재하는지 확인
+    const activityToUpdate = existingActivities.find(
+      (activity) => activity.id === activityId,
+    );
+
+    if (!activityToUpdate) {
+      throw new NotFoundException(`Activity with ID ${activityId} not found`);
+    }
+
+    // 기존 순서값을 업데이트하기 위한 새로운 순서값
+    const currentOrder = activityToUpdate.order;
+
+    // 활동의 순서를 조정하기 위한 새로운 순서값
+    if (currentOrder !== newOrder) {
+      // 중복 순서값을 가진 활동들을 조정
+      await this.activityRepository
+        .createQueryBuilder()
+        .update(Activity)
+        .set({ order: () => 'order + 1' })
+        .where('day.id = :dayId', { dayId })
+        .andWhere('order >= :newOrder', { newOrder })
+        .execute();
+    }
+
+    // 순서값 업데이트
+    await this.activityRepository.update(activityId, { order: newOrder });
+
+    return { success: true };
   }
 
   async remove(planId: string, dayId: string, activityId: string) {
@@ -68,6 +150,9 @@ export class ActivityService {
     if (!activity) {
       throw new NotFoundException(`Activity with ID ${activityId} not found`);
     }
-    return await this.dayActivityRepository.remove(activity);
+
+    await this.activityRepository.remove(activity);
+
+    await this.updatePlanTotalExpenses(planId);
   }
 }

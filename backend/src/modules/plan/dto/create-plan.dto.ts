@@ -16,9 +16,6 @@ export class CreatePlanDto {
   @IsNumber()
   readonly head_count: number;
 
-  @IsNumber()
-  readonly total_expenses: number;
-
   @IsBoolean()
   readonly plan_end: boolean;
 }

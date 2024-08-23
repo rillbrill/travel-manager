@@ -57,6 +57,22 @@ export class ActivityController {
     );
   }
 
+  // 활동 순서 변경
+  @Put(':activityId/order')
+  updateOrder(
+    @Param('planId') planId: string,
+    @Param('dayId') dayId: string,
+    @Param('activityId') activityId: string,
+    @Body() { order }: { order: number },
+  ) {
+    return this.activityService.updateActivityOrder(
+      planId,
+      dayId,
+      activityId,
+      order,
+    );
+  }
+
   // 단일 삭제
   @Delete(':activityId')
   remove(
