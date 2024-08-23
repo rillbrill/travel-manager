@@ -18,11 +18,14 @@ import {
   UserDto,
 } from './dto/auth.dto';
 import axios from 'axios';
+import { firstValueFrom } from 'rxjs';
+import { HttpService } from '@nestjs/axios';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly configService: ConfigService,
+    private readonly httpService: HttpService,
     @InjectRepository(Users)
     private readonly userRepository: Repository<Users>,
     private readonly jwtService: JwtService,
@@ -32,16 +35,35 @@ export class AuthService {
   async loginWithKakao(
     kakaoAccessToken: string,
   ): Promise<KakaoLoginResponseDto> {
-    const kakaoUserInfo = await this.getKakaoUserInfo(kakaoAccessToken);
+    const tokenUrl = 'https://kauth.kakao.com/oauth/token';
+    const params = new URLSearchParams({
+      grant_type: 'authorization_code',
+      client_id: this.configService.get('KAKAO_CLIENT_ID'),
+      // redirect_uri: this.configService.get('KAKAO_REDIRECT_URI'),
+      redirect_uri: this.configService.get('KAKAO_FE_REDIRECT_URI'),
+      code: kakaoAccessToken,
+    });
 
-    const { kakaoId, nickname, email, profileImage } = kakaoUserInfo;
+    const { data } = await firstValueFrom(
+      this.httpService.post(tokenUrl, params, {
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8',
+        },
+      }),
+    );
+    console.log('카카오 data : ', data);
+    // const kakaoUserInfo = await this.getKakaoUserInfo(data.access_token);
+    const kakaoUserInfo = await this.getKakaoUserInfo(data.access_token);
+    console.log('카카오 유저 정보:', kakaoUserInfo);
 
-    if (!kakaoId) {
+    const { id, nickname, email, profileImage } = kakaoUserInfo;
+
+    if (!id) {
       throw new UnauthorizedException('카카오 ID를 찾을 수 없습니다.');
     }
 
     let user = await this.findOrCreateUser({
-      socialId: kakaoId.toString(),
+      socialId: id.toString(),
       type: UserType.KAKAO,
       nickname,
       email,
@@ -61,10 +83,14 @@ export class AuthService {
   private async getKakaoUserInfo(accessToken: string): Promise<any> {
     try {
       const response = await axios.get('https://kapi.kakao.com/v2/user/me', {
-        headers: { Authorization: `Bearer ${accessToken}` },
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8',
+        },
       });
       return response.data;
     } catch (error) {
+      console.error(error);
       throw new UnauthorizedException(
         '카카오 사용자 정보를 가져오는데 실패했습니다.',
       );

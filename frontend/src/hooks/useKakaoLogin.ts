@@ -16,6 +16,7 @@ export const useKakaoLogin = ({ code }: Props) => {
   useEffect(() => {
     getKakaoToken({ code })
       .then((response) => {
+        console.log(response)
         if (response?.data?.accessToken && response?.data?.refreshToken) {
           authLogin('accessToken', response.data.accessToken)
           setToken('refreshToken', response.data.refreshToken)
