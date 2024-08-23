@@ -1,4 +1,4 @@
-import { IsString, IsOptional, IsInt, IsBoolean } from 'class-validator';
+import { IsString, IsOptional, IsInt } from 'class-validator';
 
 export class CreateActivityDto {
   @IsString()
@@ -15,9 +15,6 @@ export class CreateActivityDto {
   @IsInt()
   @IsOptional()
   readonly activity_expenses?: number;
-
-  @IsBoolean()
-  readonly isActivity: boolean;
 
   @IsString()
   @IsOptional()
