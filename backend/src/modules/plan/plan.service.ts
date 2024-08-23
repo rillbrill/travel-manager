@@ -58,6 +58,21 @@ export class PlanService {
     return plan;
   }
 
+  async findAllDaysAndActivities(planId: string) {
+    const plan = await this.planRepository.findOne({ where: { id: planId } });
+
+    if (!plan) {
+      throw new NotFoundException(`Plan with ID ${planId} not found`);
+    }
+
+    const days = await this.dayService.findAllByPlanId(planId);
+
+    return days.map((day) => ({
+      ...day,
+      activities: day.activities.sort((a, b) => a.order - b.order),
+    }));
+  }
+
   async update(id: string, updatePlanDto: UpdatePlanDto): Promise<Plan> {
     const existingPlan = await this.findOne(id);
 

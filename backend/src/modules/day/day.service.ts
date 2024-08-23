@@ -44,6 +44,14 @@ export class DayService {
     });
   }
 
+  async findAllByPlanId(planId: string) {
+    return this.dayRepository.find({
+      where: { plan: { id: planId } },
+      relations: ['activities'], // Activity와 함께 로드
+      order: { date: 'ASC' }, // Day를 날짜 순으로 정렬
+    });
+  }
+
   async update(planId: string, id: string, updateDayDto: UpdateDayDto) {
     const day = await this.dayRepository.findOne({
       where: { id, plan: { id: planId } },

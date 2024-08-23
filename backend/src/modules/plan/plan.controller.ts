@@ -30,6 +30,11 @@ export class PlanController {
     return this.planService.findOne(id);
   }
 
+  @Get(':id/all')
+  findAllDaysAndActivities(@Param('id') planId: string) {
+    return this.planService.findAllDaysAndActivities(planId);
+  }
+
   @Put(':id')
   update(@Param('id') id: string, @Body() updatePlanDto: UpdatePlanDto) {
     return this.planService.update(id, updatePlanDto);
