@@ -1,6 +1,6 @@
-import { create } from 'zustand'
-import { devtools } from 'zustand/middleware'
-import { immer } from 'zustand/middleware/immer'
+import { StoreNameEnum } from '@/types'
+
+import { createStoreWithMiddleware } from './createStoreWithMiddleware'
 
 type TStoreState = {
   isLoggedIn: boolean
@@ -25,21 +25,40 @@ export function removeToken(tokenName: TTokenName) {
   localStorage.removeItem(tokenName)
 }
 
-export const useAuthStore = create<TStoreState & TStoreAction>()(
-  devtools(
-    immer((set) => ({
-      isLoggedIn: getToken('accessToken') ? true : false,
-      authLogin: (tokenName: TTokenName, tokenValue: string) =>
-        set((state: TStoreState) => {
-          state.isLoggedIn = true
-          setToken(tokenName, tokenValue)
-        }),
-      authLogout: (tokenName: TTokenName) =>
-        set((state: TStoreState) => {
-          state.isLoggedIn = false
-          removeToken(tokenName)
-        }),
-    })),
-    { name: 'authStore' }
-  )
+export const useAuthStore = createStoreWithMiddleware<
+  TStoreState & TStoreAction
+>(
+  (set) => ({
+    isLoggedIn: false,
+    authLogin: (tokenName: TTokenName, tokenValue: string) =>
+      set(({ isLoggedIn }) => {
+        isLoggedIn = true
+        setToken(tokenName, tokenValue)
+      }),
+    authLogout: (tokenName: TTokenName) =>
+      set(({ isLoggedIn }) => {
+        isLoggedIn = false
+        removeToken(tokenName)
+      }),
+  }),
+  StoreNameEnum.Auth
 )
+
+// export const useAuthStore = create<TStoreState & TStoreAction>()(
+//   devtools(
+//     immer((set) => ({
+//       isLoggedIn: getToken('accessToken') ? true : false,
+//       authLogin: (tokenName: TTokenName, tokenValue: string) =>
+//         set((state: TStoreState) => {
+//           state.isLoggedIn = true
+//           setToken(tokenName, tokenValue)
+//         }),
+//       authLogout: (tokenName: TTokenName) =>
+//         set((state: TStoreState) => {
+//           state.isLoggedIn = false
+//           removeToken(tokenName)
+//         }),
+//     })),
+//     { name: 'authStore' }
+//   )
+// )
