@@ -1,9 +1,24 @@
+import { useEffect, useState } from 'react'
+
+import { fetchDays } from '@/api/Days'
 import DaySection from '@/components/planDetail/DaySection'
 import { dummyDays, dummyPlan } from '@/constants'
+import { Day } from '@/types/plan'
 
 function PlanDetailPage() {
   // TODO: get plan by id api call
   const { planName, planCountry, totalExpenses } = dummyPlan
+  const [days, setDays] = useState<Day[]>([])
+
+  useEffect(() => {
+    const getDays = async () => {
+      const data = await fetchDays()
+
+      setDays(data)
+    }
+
+    getDays()
+  }, [])
   // TODO: get activity list api call
 
   return (
@@ -17,7 +32,7 @@ function PlanDetailPage() {
       </div>
 
       <div className="flex flex-col gap-y-4">
-        {dummyDays.map((day, index) => (
+        {days.map((day, index) => (
           <DaySection
             key={day.id}
             day={day}
