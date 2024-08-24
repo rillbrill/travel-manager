@@ -11,7 +11,7 @@ import { PlanService } from './plan.service';
 import { CreatePlanDto } from './dto/create-plan.dto';
 import { UpdatePlanDto } from './dto/update-plan.dto';
 
-@Controller('plans')
+@Controller('api/plans')
 export class PlanController {
   constructor(private readonly planService: PlanService) {}
 
