@@ -11,7 +11,7 @@ import { PlanService } from './plan.service';
 import { CreatePlanDto } from './dto/create-plan.dto';
 import { UpdatePlanDto } from './dto/update-plan.dto';
 
-@Controller('plans')
+@Controller('api/plans')
 export class PlanController {
   constructor(private readonly planService: PlanService) {}
 
@@ -33,6 +33,11 @@ export class PlanController {
   @Get(':id/all')
   findAllDaysAndActivities(@Param('id') planId: string) {
     return this.planService.findAllDaysAndActivities(planId);
+  }
+
+  @Get(':id/currency')
+  async getCurrencyCode(@Param('id') id: string): Promise<string> {
+    return this.planService.getCurrencyCode(id);
   }
 
   @Put(':id')

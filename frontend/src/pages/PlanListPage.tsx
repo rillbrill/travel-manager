@@ -48,12 +48,8 @@ function PlanListPage() {
   return (
     <div className="flex flex-1 flex-col items-center gap-y-3">
       <ul className="w-full max-w-3xl space-y-2.5">
-        {currentPlans.map((plan, index) => (
+        {currentPlans.map((plan) => (
           <div key={plan.id}>
-            {index > 0 &&
-              plan.plan_end !== currentPlans[index - 1].plan_end && (
-                <hr className="mx-4 my-1.5 border-t-2 border-dotted border-gray-400" />
-              )}
             <li
               className={`relative mx-4 rounded-2xl p-4 text-sm shadow-lg ${
                 plan.plan_end ? 'bg-gray-300' : 'bg-primary-50'
@@ -105,7 +101,7 @@ function PlanListPage() {
           </div>
         ))}
       </ul>
-      <div className="fixed bottom-2 space-x-4">
+      <div className="flex space-x-4">
         <button
           onClick={handlePrevPage}
           disabled={currentPage === 1}

@@ -10,6 +10,7 @@ import { Plan } from './entities/plan.entity';
 import { CreatePlanDto } from './dto/create-plan.dto';
 import { UpdatePlanDto } from './dto/update-plan.dto';
 import { DayService } from '../day/day.service';
+import { Country } from '../country/entities/country.entity';
 
 @Injectable()
 export class PlanService {
@@ -18,6 +19,8 @@ export class PlanService {
     private readonly planRepository: Repository<Plan>,
     @Inject(forwardRef(() => DayService))
     private readonly dayService: DayService,
+    @InjectRepository(Country)
+    private readonly countryRepository: Repository<Country>,
   ) {}
 
   async create(createPlanDto: CreatePlanDto): Promise<Plan> {
@@ -76,6 +79,29 @@ export class PlanService {
       ...day,
       activities: day.activities.sort((a, b) => a.order - b.order),
     }));
+  }
+
+  async getCurrencyCode(planId: string): Promise<string> {
+    // planId를 사용해 Plan을 찾음
+    const plan = await this.planRepository.findOne({ where: { id: planId } });
+    if (!plan) {
+      throw new NotFoundException(`Plan with ID ${planId} not found`);
+    }
+
+    // plan_country에서 국가명 추출
+    const countryName = plan.plan_country.split(' ')[0];
+
+    // country_name으로 Country 엔티티 검색
+    const country = await this.countryRepository.findOne({
+      where: { country_name: countryName },
+    });
+
+    if (!country) {
+      throw new NotFoundException(`Country with name ${countryName} not found`);
+    }
+
+    // currency_code 반환
+    return country.currency_code;
   }
 
   async update(id: string, updatePlanDto: UpdatePlanDto): Promise<Plan> {
