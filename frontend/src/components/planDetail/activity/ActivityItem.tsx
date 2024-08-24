@@ -57,14 +57,5 @@ function ActivityItem({ activity }: Props) {
       )}
     </div>
   )
-}
 
 export default ActivityItem
-
-/*
-function ActivityItem() {
-  return <div>activity item</div>
-}
-
-export default ActivityItem
-*/
