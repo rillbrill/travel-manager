@@ -2,8 +2,8 @@ import axios from 'axios'
 
 import { Activity, Day, DaysResDto } from '@/types/plan'
 
-export const fetchDays = async (): Promise<Day[]> => {
-  const planId = '9e74d62c-3954-41ab-9aca-780c16a61f0d'
+export const fetchDays = async (planId: string): Promise<Day[]> => {
+  // const planId = '9e74d62c-3954-41ab-9aca-780c16a61f0d'
   try {
     const response = await axios.get<DaysResDto>(
       `http://localhost:3333/plans/${planId}/all`
