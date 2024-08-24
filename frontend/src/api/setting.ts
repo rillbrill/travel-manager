@@ -1,5 +1,7 @@
 import axios, { AxiosError, AxiosInstance, AxiosRequestConfig } from 'axios'
+import camelcaseKeys from 'camelcase-keys'
 import { jwtDecode } from 'jwt-decode'
+import snakecaseKeys from 'snakecase-keys'
 
 import { routes } from '@/routes'
 import { getToken, removeToken, setToken } from '@/store/auth'
@@ -94,10 +96,15 @@ export const createClient = (config?: AxiosRequestConfig): AxiosInstance => {
     (error: AxiosError) => Promise.reject(error)
   )
 
+  // request interceptor
+  axiosInstance.interceptors.request.use((request) => {
+    return { ...request, data: snakecaseKeys(request.data) }
+  })
+
   // Response Interceptor
   axiosInstance.interceptors.response.use(
     (response) => {
-      return response
+      return { ...response, data: camelcaseKeys(response.data, { deep: true }) }
     },
     (error: AxiosError) => {
       //401 => accessToken 만료
