@@ -6,6 +6,7 @@ export enum AddPlanStepEnum {
 
 export enum StoreNameEnum {
   Plan = 'plan',
+  Auth = 'auth',
 }
 
 export enum DateFormatTypeEnum {
