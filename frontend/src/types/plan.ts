@@ -48,6 +48,19 @@ export type DayCategory = {
   color: string
 }
 
+export type Expense = {
+  id: string
+  category: string
+  krw: number
+}
+
+export type ExtraExpense = {
+  id: string
+  category: string
+  expenseName: string
+  krw: number
+}
+
 export type AddPlanReqDto = Omit<Plan, 'id' | 'totalExpenses'>
 
 export type AddPlanResDto = Plan
