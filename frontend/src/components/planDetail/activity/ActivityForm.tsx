@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form'
 
 import { Button, Field, Input } from '@/components/common'
 import { errorMessages } from '@/constants/errorMessage'
-import { ActivityReqDto, DayCategoryEnum } from '@/types/plan'
+import { AddActivityReqDto, DayCategoryEnum, DaysTabEnum } from '@/types/plan'
 import { cn } from '@/utils/cn'
 
 import CategoryList from './CategoryList'
@@ -11,27 +11,33 @@ import ExpenseInput from './ExpenseInput'
 import LocationInput from './LocationInput'
 
 type Props = {
-  defaultValues?: ActivityReqDto
+  currentTab: DaysTabEnum
+  defaultValues?: AddActivityReqDto
   handleCancel: () => void
-  handleSave: (payload: ActivityReqDto) => void
+  handleSave: (payload: AddActivityReqDto) => void
 }
 
-const initialValues: ActivityReqDto = {
-  category: null,
+const initialValues: AddActivityReqDto = {
   activityName: '',
-  activityLocation: null,
-  activityDetail: null,
+  detail: '',
+  activityLocation: '',
   activityExpenses: null,
+  category: '',
 }
 
-function ActivityForm({ defaultValues, handleCancel, handleSave }: Props) {
-  const [activityPayload, setActivityPayload] = useState<ActivityReqDto>(
+function ActivityForm({
+  currentTab,
+  defaultValues,
+  handleCancel,
+  handleSave,
+}: Props) {
+  const [activityPayload, setActivityPayload] = useState<AddActivityReqDto>(
     defaultValues || initialValues
   )
   const {
     register,
     formState: { errors, isDirty },
-  } = useForm<Partial<ActivityReqDto>>({
+  } = useForm<Partial<AddActivityReqDto>>({
     defaultValues: defaultValues || initialValues,
     mode: 'onChange',
   })
@@ -43,7 +49,7 @@ function ActivityForm({ defaultValues, handleCancel, handleSave }: Props) {
         : !errors.activityName && !!activityPayload.category && isDirty,
     [errors, activityPayload.category, isDirty]
   )
-  const updatePayload = (value: Partial<ActivityReqDto>) => {
+  const updatePayload = (value: Partial<AddActivityReqDto>) => {
     setActivityPayload({
       ...activityPayload,
       ...value,
@@ -56,6 +62,7 @@ function ActivityForm({ defaultValues, handleCancel, handleSave }: Props) {
         name="카테고리"
         value={
           <CategoryList
+            currentTab={currentTab}
             selectedCategory={activityPayload.category as DayCategoryEnum}
             onClick={(category) => updatePayload({ category })}
           />
@@ -103,10 +110,9 @@ function ActivityForm({ defaultValues, handleCancel, handleSave }: Props) {
         name="메모"
         value={
           <textarea
-            {...register('activityDetail', {
-              value: activityPayload.activityDetail,
-              onChange: (e) =>
-                updatePayload({ activityDetail: e.target.value }),
+            {...register('detail', {
+              value: activityPayload.detail,
+              onChange: (e) => updatePayload({ detail: e.target.value }),
             })}
             className="w-full rounded-md border border-gray-300 p-2 text-sm"
           />

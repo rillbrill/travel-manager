@@ -1,113 +1,81 @@
-import { useState } from 'react'
-import { FiPlusSquare } from 'react-icons/fi'
+import { useMemo } from 'react'
 
 import { useModal } from '@/hooks/useModal'
 import { usePlanStore } from '@/store/plan'
-import { NullableDate, Place } from '@/types/plan'
+import { DateFormatTypeEnum } from '@/types'
+import { formatDate } from '@/utils/formatDate'
 
-import { Button, DateRangePicker } from '../common'
-import PlaceButton from './PlaceButton'
+import { Button, DateRangePicker, Field } from '../common'
 import SelectPlaceModal from './SelectPlaceModal'
 
 function SetPlaceAndDateForm() {
   const {
-    plan: { places },
+    plan: { planCountry, startDate, endDate },
     setDates,
-    setPlaces,
+    setPlanCountry,
   } = usePlanStore()
-  const [currentPlace, setCurrentPlace] = useState<Place | null>(null)
   const { isModalOpen, openModal, closeModal } = useModal()
+  const isDatesSelected = useMemo(
+    () => startDate && endDate,
+    [startDate, endDate]
+  )
 
-  const addPlace = (newPlace: Place) => {
-    setPlaces([...places, newPlace])
-    setCurrentPlace(newPlace)
+  const selectPlace = (place: string) => {
+    setPlanCountry(place)
     closeModal()
-  }
-  const removePlace = (id: number) => {
-    setPlaces(places.filter((elem) => elem.id !== id))
-    setCurrentPlace(null)
-  }
-  const setDatesByPlace = (startDate: NullableDate, endDate: NullableDate) => {
-    if (!currentPlace) return
-
-    const updatedCurrentPlace = { ...currentPlace, startDate, endDate }
-    setCurrentPlace(updatedCurrentPlace)
-
-    const updatedPlaces = places.map((elem) => {
-      if (elem.place === currentPlace.place && elem.id === currentPlace.id) {
-        return { ...elem, startDate, endDate }
-      }
-      return elem
-    })
-    setPlaces(updatedPlaces)
-
-    const totalStartDate = startDate
-      ? new Date(
-          Math.min(
-            ...updatedPlaces
-              .filter((elem) => !!elem.startDate)
-              .map((elem) => elem.startDate!.getTime())
-          )
-        )
-      : null
-    const totalEndDate = endDate
-      ? new Date(
-          Math.max(
-            ...updatedPlaces
-              .filter((elem) => !!elem.endDate)
-              .map((elem) => elem.endDate!.getTime())
-          )
-        )
-      : null
-    setDates(totalStartDate, totalEndDate)
   }
 
   return (
     <>
-      <div className="mt-2 flex w-full flex-col gap-y-4">
-        <div className="flex flex-col gap-y-2">
-          <div className="flex items-end justify-between px-1">
-            <p className="text-sm text-gray-500">
-              * 여행지를 클릭하여 여행할 날짜를 설정해주세요.
-            </p>
-            <Button
-              type="button"
-              isFull={false}
-              className="bg-transparent p-0 text-primary-default"
-              onClick={openModal}
-            >
-              <FiPlusSquare className="text-3xl" />
-            </Button>
-          </div>
-
-          <div className="flex min-h-16 w-full flex-wrap items-center gap-2 rounded-md border border-gray-300 p-4">
-            {places.length === 0 && (
-              <p className="text-gray-400">여행지를 추가해주세요.</p>
-            )}
-            {places.length > 0 &&
-              places.map((elem, index) => (
-                <PlaceButton
-                  key={index}
-                  index={index}
-                  {...elem}
-                  setCurrentPlace={setCurrentPlace}
-                  removePlace={removePlace}
-                />
-              ))}
-          </div>
+      <div className="mt-2 flex flex-col gap-y-4">
+        <div className="flex flex-col gap-y-3">
+          <Field
+            name="여행기간"
+            value={
+              isDatesSelected
+                ? `${formatDate(DateFormatTypeEnum.DateWithSlash, startDate)} -
+            ${formatDate(DateFormatTypeEnum.DateWithSlash, endDate)}`
+                : ''
+            }
+          />
+          <DateRangePicker
+            defaultStartDate={startDate}
+            defaultEndDate={endDate}
+            onChange={(startDate, endDate) => setDates(startDate, endDate)}
+          />
         </div>
 
-        {currentPlace && (
-          <DateRangePicker
-            defaultStartDate={currentPlace.startDate}
-            defaultEndDate={currentPlace.endDate || undefined}
-            onChange={setDatesByPlace}
-          />
-        )}
+        <Field
+          name="여행지"
+          value={
+            planCountry ? (
+              <div className="flex w-full items-center justify-between gap-x-3 pr-6">
+                <p>{planCountry}</p>
+                <Button
+                  type="button"
+                  className="rounded-[4px] px-3 py-1 text-sm"
+                  isFull={false}
+                  onClick={openModal}
+                >
+                  수정하기
+                </Button>
+              </div>
+            ) : (
+              <Button
+                type="button"
+                shape="input"
+                className="border-blue-500 text-blue-500"
+                onClick={openModal}
+              >
+                여행지 선택하기
+              </Button>
+            )
+          }
+        />
       </div>
 
       {isModalOpen && (
-        <SelectPlaceModal closeModal={closeModal} addPlace={addPlace} />
+        <SelectPlaceModal closeModal={closeModal} selectPlace={selectPlace} />
       )}
     </>
   )

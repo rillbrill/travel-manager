@@ -15,39 +15,31 @@ export enum DayCategoryEnum {
 
 export type NullableDate = Date | null
 
-export type Place = {
-  id: number
-  place: string
-  startDate: NullableDate
-  endDate: NullableDate
-}
-
 export type Plan = {
-  name: string
+  id: string
+  planName: string
+  planCountry: string
+  headCount: number
   startDate: NullableDate
   endDate: NullableDate
-  headCount: number
-  places: Place[]
+  totalExpenses: number
+  planEnd: boolean
 }
 
 export type Activity = {
   id: string
-  planId: string
-  dayId: string
   activityName: string
-  activityLocation: string | null
-  activityDetail: string | null
+  detail: string
+  activityLocation: string
   activityExpenses: number | null
-  category: string | null
+  category: string
+  isActivity: boolean
+  order: number
 }
 
 export type Day = {
   id: string
-  planId: string
   date: Date
-  country: string
-  city: string
-  totalExpense: number
   activities: Activity[]
 }
 
@@ -56,6 +48,36 @@ export type DayCategory = {
   color: string
 }
 
+export type AddPlanReqDto = Omit<Plan, 'id' | 'totalExpenses'>
+
+export type AddPlanResDto = Plan
+
+export type PlansResDto = Plan[]
+
+export type PlanResDto = Plan
+
 export type DaysResDto = Day[]
 
-export type ActivityReqDto = Omit<Activity, 'id' | 'planId' | 'dayId'>
+export type AddActivityReqDto = Omit<Activity, 'id' | 'isActivity' | 'order'>
+
+export type AddActivityResDto = Activity & {
+  day: { id: string; plan: { id: string } }
+}
+
+export type AddEtcActivityReqDto = AddActivityReqDto
+
+export type AddEtcActivityResDto = AddActivityResDto
+
+export type ActivitiesByDayResDto = Activity[]
+
+export type EditActivityReqDto = AddActivityReqDto
+
+export type EditActivityResDto = Activity
+
+export type OrderActivitiesReqDto = {
+  order: number
+}
+
+export type OrderActivitiesResDto = {
+  success: boolean
+}

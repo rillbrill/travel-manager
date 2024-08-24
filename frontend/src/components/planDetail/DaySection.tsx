@@ -10,10 +10,11 @@ import ExpenseTable from './expense/ExpenseTable'
 type Props = {
   day: Day
   dayIndex: number
+  country: string
 }
 
-function DaySection({ day, dayIndex }: Props) {
-  const { id, date, country, city, totalExpense, activities } = day
+function DaySection({ day, dayIndex, country }: Props) {
+  const { id, date, activities } = day
   const [currentTab, setCurrentTab] = useState<DaysTabEnum>(
     DaysTabEnum.Activity
   )
@@ -37,8 +38,7 @@ function DaySection({ day, dayIndex }: Props) {
         dayIndex={dayIndex}
         date={date}
         country={country}
-        city={city}
-        totalExpense={totalExpense}
+        totalExpense={0}
       />
 
       <div className="ml-14 mt-3 flex flex-col gap-2">
@@ -51,7 +51,11 @@ function DaySection({ day, dayIndex }: Props) {
 
         {/* content */}
         {showForm && (
-          <ActivityForm handleCancel={closeForm} handleSave={() => {}} />
+          <ActivityForm
+            currentTab={currentTab}
+            handleCancel={closeForm}
+            handleSave={() => {}}
+          />
         )}
         {currentTab === DaysTabEnum.Activity && (
           <ActivityList activities={activities} />
