@@ -30,3 +30,18 @@ export const fetchDays = async (planId: string): Promise<Day[]> => {
     return []
   }
 }
+
+export const deleteActivity = async (
+  planId: string,
+  dayId: string,
+  activityId: string
+): Promise<void> => {
+  try {
+    await axios.delete(
+      `http://localhost:3333/plans/${planId}/days/${dayId}/activities/${activityId}`
+    )
+    console.log(`Activity with id ${activityId} deleted successfully.`)
+  } catch (error) {
+    console.error('Error deleting activity:', error)
+  }
+}
