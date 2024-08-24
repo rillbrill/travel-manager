@@ -54,7 +54,6 @@ function SelectPlaceModal({ closeModal, selectPlace }: Props) {
             <span>{elem.place}</span>
             <Button
               type="button"
-              isFull={false}
               className="border border-blue-500 bg-gray-50 px-3 py-1 text-blue-500"
               onClick={() => selectPlace(elem.place)}
             >
