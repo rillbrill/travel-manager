@@ -106,7 +106,7 @@ function ActivityForm({
         name="경비"
         value={
           <ExpenseInput
-            value={activityPayload.activityExpenses?.toString()}
+            value={activityPayload.activityExpenses || ''}
             onChange={(e) =>
               updatePayload({ activityExpenses: Number(e.target.value) })
             }

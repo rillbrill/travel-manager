@@ -59,6 +59,11 @@ export type ActivitiesByPlan = {
   activities: Activity[]
 }
 
+export type Currency = {
+  code: string
+  value: number
+}
+
 export type AddPlanReqDto = Omit<Plan, 'id' | 'totalExpenses'>
 
 export type AddPlanResDto = Plan
@@ -96,3 +101,16 @@ export type OrderActivitiesResDto = {
 }
 
 export type PlacesResDto = Place[]
+
+export type CountryCodeResDto = string
+
+export type ConvertCurrencyReqDto = {
+  from: string
+  to: string
+  amount: number
+}
+
+export type ConvertCurrencyResDto = {
+  original: Currency
+  converted: Currency
+}

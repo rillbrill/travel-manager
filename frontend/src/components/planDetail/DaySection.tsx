@@ -1,6 +1,7 @@
 import { useState } from 'react'
 
 import { plansApi } from '@/api/plans'
+import { useModal } from '@/hooks/useModal'
 import { usePending } from '@/hooks/usePending'
 import { HttpStatusCodeEnum } from '@/types'
 import { Activity, AddActivityReqDto, Day, DaysTabEnum } from '@/types/plan'
@@ -23,19 +24,17 @@ function DaySection({ planId, day, dayIndex, country }: Props) {
   const [currentTab, setCurrentTab] = useState<DaysTabEnum>(
     DaysTabEnum.Activity
   )
-  const [showForm, setShowForm] = useState<boolean>(false)
+  const {
+    isModalOpen: showForm,
+    openModal: openForm,
+    closeModal: closeForm,
+  } = useModal()
   const [activitiesByDay, setActivitiesByDay] = useState<Activity[]>(activities)
   const { isPending, toggleIsPending } = usePending()
 
   const changeCurrentTab = (tab: DaysTabEnum) => {
     setCurrentTab(tab)
-    setShowForm(false)
-  }
-  const openForm = () => {
-    setShowForm(true)
-  }
-  const closeForm = () => {
-    setShowForm(false)
+    closeForm()
   }
   const addActivity = async (payload: AddActivityReqDto) => {
     toggleIsPending(true)
