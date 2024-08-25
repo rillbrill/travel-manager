@@ -35,14 +35,22 @@ function ActivityForm({
   const [activityPayload, setActivityPayload] = useState<AddActivityReqDto>(
     defaultValues || initialValues
   )
+  console.log(activityPayload)
 
   const isValid = useMemo(() => {
     const commonValidation =
       !!activityPayload.activityName &&
       activityPayload.activityName.length <= 15 &&
       !!activityPayload.category
-    return defaultValues ? commonValidation : commonValidation
-  }, [activityPayload.activityName, activityPayload.category])
+    return currentTab === DaysTabEnum.Activity
+      ? commonValidation
+      : commonValidation && activityPayload.activityExpenses
+  }, [
+    activityPayload.activityName,
+    activityPayload.category,
+    activityPayload.activityExpenses,
+    currentTab,
+  ])
   const updatePayload = (value: Partial<AddActivityReqDto>) => {
     setActivityPayload({
       ...activityPayload,
@@ -112,6 +120,7 @@ function ActivityForm({
             }
           />
         }
+        isRequired={currentTab === DaysTabEnum.Expense}
       />
 
       <div className="mt-2 flex items-center gap-x-3">
