@@ -6,9 +6,15 @@ type Props = {
   activities: Activity[]
   planId: string
   dayId: string
+  setActivitiesByDay: (activities: Activity[]) => void
 }
 
-function ActivityList({ activities, planId, dayId }: Props) {
+function ActivityList({
+  activities,
+  planId,
+  dayId,
+  setActivitiesByDay,
+}: Props) {
   return (
     <div className="text-sm">
       {activities.length === 0 ? (
@@ -21,6 +27,7 @@ function ActivityList({ activities, planId, dayId }: Props) {
               activity={activity}
               planId={planId}
               dayId={dayId}
+              setActivitiesByDay={setActivitiesByDay}
             />
           ))}
         </>
