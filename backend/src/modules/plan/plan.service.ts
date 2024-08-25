@@ -11,6 +11,7 @@ import { CreatePlanDto } from './dto/create-plan.dto';
 import { UpdatePlanDto } from './dto/update-plan.dto';
 import { DayService } from '../day/day.service';
 import { Country } from '../country/entities/country.entity';
+import { ActivityService } from '../activity/activity.service';
 
 @Injectable()
 export class PlanService {
@@ -19,6 +20,8 @@ export class PlanService {
     private readonly planRepository: Repository<Plan>,
     @Inject(forwardRef(() => DayService))
     private readonly dayService: DayService,
+    @Inject(forwardRef(() => ActivityService))
+    private readonly activityService: ActivityService,
     @InjectRepository(Country)
     private readonly countryRepository: Repository<Country>,
   ) {}
@@ -75,10 +78,22 @@ export class PlanService {
 
     const days = await this.dayService.findAllByPlanId(planId);
 
-    return days.map((day) => ({
-      ...day,
-      activities: day.activities.sort((a, b) => a.order - b.order),
-    }));
+    const result = await Promise.all(
+      days.map(async (day) => {
+        const activities =
+          await this.activityService.findActivitiesByIsActivity(
+            planId,
+            day.id,
+            true, // is_activity가 true인 활동만 조회
+          );
+        return {
+          ...day,
+          activities: activities.sort((a, b) => a.order - b.order),
+        };
+      }),
+    );
+
+    return result;
   }
 
   async getCurrencyCode(planId: string): Promise<string> {
