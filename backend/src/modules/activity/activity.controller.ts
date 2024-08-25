@@ -47,7 +47,7 @@ export class ActivityController {
     return this.activityService.findOne(planId, dayId, activityId);
   }
 
-  // isActivity가 true인 활동 생성
+  // is_activity가 true인 활동 생성
   @Post()
   createActivity(
     @Param('planId') planId: string,
@@ -62,7 +62,7 @@ export class ActivityController {
     );
   }
 
-  // isActivity가 false인 활동 생성
+  // is_activity가 false인 활동 생성
   @Post('expenses')
   createNonActivity(
     @Param('planId') planId: string,

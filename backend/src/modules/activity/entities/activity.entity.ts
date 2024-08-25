@@ -32,7 +32,7 @@ export class Activity {
   activity_expenses: number;
 
   @Column({ type: 'boolean' })
-  isActivity: boolean;
+  is_activity: boolean;
 
   @Column({ type: 'varchar', length: 20 })
   category: string;
