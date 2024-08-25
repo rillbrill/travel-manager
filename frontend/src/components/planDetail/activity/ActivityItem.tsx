@@ -2,6 +2,7 @@ import { FiEdit3 } from 'react-icons/fi'
 import { RiDeleteBin6Line } from 'react-icons/ri'
 
 import { deleteActivity, updateActivity } from '@/api/activities'
+import { plansApi } from '@/api/plans'
 import { useActivityStore } from '@/store/activity'
 import { HttpStatusCodeEnum } from '@/types'
 import { Activity, DaysTabEnum, EditActivityReqDto } from '@/types/plan'
@@ -13,9 +14,10 @@ type Props = {
   activity: Activity
   planId: string
   dayId: string
+  setActivitiesByDay: (activities: Activity[]) => void
 }
 
-function ActivityItem({ activity, planId, dayId }: Props) {
+function ActivityItem({ activity, planId, dayId, setActivitiesByDay }: Props) {
   const {
     activity: editingItem,
     editingActivityId,
@@ -38,18 +40,12 @@ function ActivityItem({ activity, planId, dayId }: Props) {
 
   const handleSaveClick = async (payload: EditActivityReqDto) => {
     if (planId && dayId && activityId) {
-      console.log('payload')
-      console.log(payload)
-      try {
-        const response = await updateActivity(
-          planId,
-          dayId,
-          activityId,
-          payload
-        )
-        console.log('Update response:', response)
-      } catch (error) {
-        console.error('Failed to update activity:', error)
+      const response = await updateActivity(planId, dayId, activityId, payload)
+      if (response?.status === HttpStatusCodeEnum.OK) {
+        const updatedRes = await plansApi.getActivitiesByDay(planId, dayId)
+        if (updatedRes?.status === HttpStatusCodeEnum.OK) {
+          setActivitiesByDay(updatedRes.data)
+        }
       }
     }
     setEditingActivityId('')
@@ -63,8 +59,11 @@ function ActivityItem({ activity, planId, dayId }: Props) {
 
     if (planId && dayId && activityId) {
       const response = await deleteActivity(planId, dayId, activityId)
-      if (response?.status === HttpStatusCodeEnum.Created) {
-        console.log('delete' + planId)
+      if (response?.status === HttpStatusCodeEnum.OK) {
+        const updatedRes = await plansApi.getActivitiesByDay(planId, dayId)
+        if (updatedRes?.status === HttpStatusCodeEnum.OK) {
+          setActivitiesByDay(updatedRes.data)
+        }
       }
     }
   }

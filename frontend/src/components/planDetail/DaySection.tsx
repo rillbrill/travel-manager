@@ -96,6 +96,7 @@ function DaySection({ planId, day, dayIndex, country }: Props) {
         {currentTab === DaysTabEnum.Activity && (
           <ActivityList
             activities={activitiesByDay}
+            setActivitiesByDay={setActivitiesByDay}
             planId={planId}
             dayId={dayId}
           />
