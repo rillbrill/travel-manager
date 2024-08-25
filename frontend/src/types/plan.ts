@@ -64,6 +64,19 @@ export type Currency = {
   value: number
 }
 
+export type Expense = {
+  id: string
+  category: string
+  krw: number
+}
+
+export type ExtraExpense = {
+  id: string
+  category: string
+  expenseName: string
+  krw: number
+}
+
 export type SameName = {
   region: string[]
   keyword: string
