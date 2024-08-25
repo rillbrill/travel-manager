@@ -42,7 +42,7 @@ function ActivityItem({ activity, planId, dayId, setActivitiesByDay }: Props) {
     if (planId && dayId && activityId) {
       const response = await updateActivity(planId, dayId, activityId, payload)
       if (response?.status === HttpStatusCodeEnum.OK) {
-        const updatedRes = await plansApi.getEtcActivitiesByDay(planId, dayId)
+        const updatedRes = await plansApi.getActivitiesByDay(planId, dayId)
         if (updatedRes?.status === HttpStatusCodeEnum.OK) {
           setActivitiesByDay(updatedRes.data)
         }
@@ -60,7 +60,7 @@ function ActivityItem({ activity, planId, dayId, setActivitiesByDay }: Props) {
     if (planId && dayId && activityId) {
       const response = await deleteActivity(planId, dayId, activityId)
       if (response?.status === HttpStatusCodeEnum.OK) {
-        const updatedRes = await plansApi.getEtcActivitiesByDay(planId, dayId)
+        const updatedRes = await plansApi.getActivitiesByDay(planId, dayId)
         if (updatedRes?.status === HttpStatusCodeEnum.OK) {
           setActivitiesByDay(updatedRes.data)
         }
