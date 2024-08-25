@@ -48,6 +48,11 @@ export type DayCategory = {
   color: string
 }
 
+export type Place = {
+  cityName: string
+  countryName: string
+}
+
 export type AddPlanReqDto = Omit<Plan, 'id' | 'totalExpenses'>
 
 export type AddPlanResDto = Plan
@@ -81,3 +86,5 @@ export type OrderActivitiesReqDto = {
 export type OrderActivitiesResDto = {
   success: boolean
 }
+
+export type PlacesResDto = Place[]

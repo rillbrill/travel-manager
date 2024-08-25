@@ -20,4 +20,5 @@ export enum HttpStatusCodeEnum {
   Forbbiden = 403,
   NotFound = 404,
   OK = 200,
+  Created = 201,
 }

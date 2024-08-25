@@ -53,7 +53,7 @@ function SetPlaceAndDateForm() {
                 <p>{planCountry}</p>
                 <Button
                   type="button"
-                  className="rounded-[4px] px-3 py-1 text-sm"
+                  className="rounded-[4px] border border-blue-500 bg-transparent px-3 py-1 text-sm text-blue-500"
                   onClick={openModal}
                 >
                   수정하기

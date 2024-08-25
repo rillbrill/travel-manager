@@ -98,7 +98,10 @@ export const createClient = (config?: AxiosRequestConfig): AxiosInstance => {
 
   // request interceptor
   axiosInstance.interceptors.request.use((request) => {
-    return { ...request, data: snakecaseKeys(request.data) }
+    if (request.data) {
+      return { ...request, data: snakecaseKeys(request.data, { deep: true }) }
+    }
+    return request
   })
 
   // Response Interceptor
