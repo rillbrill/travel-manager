@@ -75,7 +75,7 @@ function ShowActivity({ activity }: Props) {
       </div>
       <div className="mb-3 flex">
         <div className={style}>메모</div>
-        <div>{activity.detail || ''}</div>
+        <div>{activity.detail || '-'}</div>
       </div>
       <div className="flex">
         <div className={style}>경비</div>
