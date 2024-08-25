@@ -13,6 +13,7 @@ type PlanActions = {
   setHeadCount: (value: number) => void
   setDates: (startDate: NullableDate, endDate: NullableDate) => void
   setPlan: (newPlan: Partial<AddPlanReqDto>) => void
+  resetPlan: () => void
 }
 
 const initialState: AddPlanReqDto = {
@@ -50,6 +51,11 @@ export const usePlanStore = createStoreWithMiddleware<PlanState & PlanActions>(
           ...plan,
           ...values,
         }
+      })
+    },
+    resetPlan: () => {
+      set((state) => {
+        state.plan = initialState
       })
     },
   }),

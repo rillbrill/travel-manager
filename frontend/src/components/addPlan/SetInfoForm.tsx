@@ -7,7 +7,7 @@ import { usePlanStore } from '@/store/plan'
 function SetInfoForm() {
   const {
     plan: { planName, headCount },
-    setPlanName: setName,
+    setPlanName,
     setHeadCount,
   } = usePlanStore()
   const {
@@ -18,7 +18,7 @@ function SetInfoForm() {
   return (
     <div className="flex flex-col gap-y-4">
       <Controller
-        name="name"
+        name="planName"
         control={control}
         rules={{
           required: { value: true, message: errorMessages.addPlan.name },
@@ -30,14 +30,13 @@ function SetInfoForm() {
         }) => (
           <Input
             type="text"
-            defaultValue={planName}
             value={planName}
             label="여행명"
             placeholder="여행명을 입력해주세요"
             errorMessage={errors.name && error?.message}
             onChange={(e) => {
               onChange(e)
-              setName(e.target.value)
+              setPlanName(e.target.value)
             }}
             {...props}
           />

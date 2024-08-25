@@ -1,4 +1,4 @@
-import { forwardRef, InputHTMLAttributes, useState } from 'react'
+import { forwardRef, InputHTMLAttributes, useEffect, useState } from 'react'
 import { FiMinus, FiPlus } from 'react-icons/fi'
 
 import { cn } from '@/utils/cn'
@@ -14,7 +14,7 @@ const Input = forwardRef<HTMLInputElement, Props>(
   (
     {
       type = 'text',
-      value,
+      value = '',
       label,
       className,
       errorMessage,
@@ -42,6 +42,12 @@ const Input = forwardRef<HTMLInputElement, Props>(
       }
     }
 
+    useEffect(() => {
+      if (type === 'number') {
+        setNumberValue(Number(value))
+      }
+    }, [value])
+
     return (
       <div className="flex w-full flex-col gap-y-1">
         {!!label && (
@@ -51,6 +57,7 @@ const Input = forwardRef<HTMLInputElement, Props>(
         {type === 'text' && (
           <input
             ref={ref}
+            value={value}
             className={cn([
               'w-full rounded-lg border border-gray-300 py-3 pl-3 pr-2',
               className,

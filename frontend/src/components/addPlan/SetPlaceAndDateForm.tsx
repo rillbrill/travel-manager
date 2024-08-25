@@ -53,8 +53,7 @@ function SetPlaceAndDateForm() {
                 <p>{planCountry}</p>
                 <Button
                   type="button"
-                  className="rounded-[4px] px-3 py-1 text-sm"
-                  isFull={false}
+                  className="rounded-[4px] border border-blue-500 bg-transparent px-3 py-1 text-sm text-blue-500"
                   onClick={openModal}
                 >
                   수정하기
@@ -65,6 +64,7 @@ function SetPlaceAndDateForm() {
                 type="button"
                 shape="input"
                 className="border-blue-500 text-blue-500"
+                isFull
                 onClick={openModal}
               >
                 여행지 선택하기

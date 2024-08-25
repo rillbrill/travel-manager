@@ -65,6 +65,14 @@ export default {
         '.container': {
           '@apply max-w-lg mx-auto min-h-dvh': '',
         },
+        '.no-scrollbar': {
+          /* Hide scrollbar for modern browsers */
+          '::-webkit-scrollbar': {
+            display: 'none',
+          },
+          '-ms-overflow-style': 'none' /* IE and Edge */,
+          'scrollbar-width': 'none' /* Firefox */,
+        },
       })
     ),
   ],

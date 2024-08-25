@@ -7,10 +7,18 @@ import { cn } from '@/utils/cn'
 type Props = {
   stepIndex: number
   isValid?: boolean
+  isLoading?: boolean
   moveStep: (step: number) => void
+  handleSubmit: () => Promise<void>
 }
 
-function MoveStepButtons({ stepIndex, isValid, moveStep }: Props) {
+function MoveStepButtons({
+  stepIndex,
+  isValid,
+  isLoading,
+  moveStep,
+  handleSubmit,
+}: Props) {
   const isFirstStep = stepIndex === 0
   const isLastStep = stepIndex === Object.keys(AddPlanStepEnum).length / 2 - 1
   const hasOneButton = isFirstStep
@@ -20,11 +28,6 @@ function MoveStepButtons({ stepIndex, isValid, moveStep }: Props) {
     moveStep(stepIndex - 1)
   }
   const moveToNextStep = () => {
-    if (isLastStep) {
-      // TODO: api call
-      return
-    }
-
     moveStep(stepIndex + 1)
   }
 
@@ -36,7 +39,12 @@ function MoveStepButtons({ stepIndex, isValid, moveStep }: Props) {
       ])}
     >
       {hasOneButton && (
-        <Button isFull={true} isDisabled={!isValid} onClick={moveToNextStep}>
+        <Button
+          type="button"
+          isFull
+          isDisabled={!isValid}
+          onClick={moveToNextStep}
+        >
           <span className="text-sm">다음 단계로</span>
           <FiChevronRight className="text-lg" />
         </Button>
@@ -44,19 +52,33 @@ function MoveStepButtons({ stepIndex, isValid, moveStep }: Props) {
       {hasTwoButtons && (
         <>
           <Button
+            type="button"
             className="border border-blue-500 bg-transparent text-gray-800"
-            isFull={false}
             onClick={moveToPrevStep}
           >
             <FiChevronLeft className="text-lg text-blue-500" />
             <span className="text-sm text-blue-500">이전 단계로</span>
           </Button>
-          <Button isFull={false} isDisabled={!isValid} onClick={moveToNextStep}>
-            <span className="text-sm">
-              {isLastStep ? '완료하기' : '다음 단계로'}
-            </span>
-            <FiChevronRight className="text-lg" />
-          </Button>
+          {isLastStep ? (
+            <Button
+              type="button"
+              isLoading={isLoading}
+              isDisabled={!isValid}
+              onClick={handleSubmit}
+            >
+              <span className="text-sm">완료하기</span>
+              <FiChevronRight className="text-lg" />
+            </Button>
+          ) : (
+            <Button
+              type="button"
+              isDisabled={!isValid}
+              onClick={moveToNextStep}
+            >
+              <span className="text-sm">다음 단계로</span>
+              <FiChevronRight className="text-lg" />
+            </Button>
+          )}
         </>
       )}
     </div>
