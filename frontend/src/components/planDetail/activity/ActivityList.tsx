@@ -1,15 +1,14 @@
-import { useState } from 'react'
-
 import { Activity } from '@/types/plan'
 
 import ActivityItem from './ActivityItem'
 
 type Props = {
   activities: Activity[]
+  planId: string
+  dayId: string
 }
 
-function ActivityList({ activities }: Props) {
-  const [editingActivityId, setEditingActivityId] = useState('')
+function ActivityList({ activities, planId, dayId }: Props) {
   return (
     <div className="text-sm">
       {activities.length === 0 ? (
@@ -20,8 +19,8 @@ function ActivityList({ activities }: Props) {
             <ActivityItem
               key={activity.id}
               activity={activity}
-              editingActivityId={editingActivityId}
-              setEditingActivityId={setEditingActivityId}
+              planId={planId}
+              dayId={dayId}
             />
           ))}
         </>
