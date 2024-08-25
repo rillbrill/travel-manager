@@ -82,6 +82,7 @@ export const createClient = (config?: AxiosRequestConfig): AxiosInstance => {
         } catch (refreshError) {
           isRefreshing = false
           removeToken('refreshToken')
+          removeToken('accessToken')
           window.location.href = '/login'
           return Promise.reject(refreshError)
         }
