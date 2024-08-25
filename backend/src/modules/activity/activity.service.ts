@@ -5,7 +5,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { MoreThan, Repository } from 'typeorm';
 import { Activity } from './entities/activity.entity';
 import { CreateActivityDto } from './dto/create-activity.dto';
 import { UpdateActivityDto } from './dto/update-activity.dto';
@@ -21,24 +21,13 @@ export class ActivityService {
     private readonly planService: PlanService,
   ) {}
 
-  async findAll(
-    planId: string,
-    dayId: string,
-    isActivity?: boolean,
-    category?: string,
-  ) {
+  async findAll(planId: string, dayId: string, category?: string) {
     const queryBuilder = this.activityRepository
       .createQueryBuilder('activity')
       .leftJoin('activity.day', 'day')
       .leftJoin('day.plan', 'plan')
       .where('day.id = :dayId', { dayId })
       .andWhere('plan.id = :planId', { planId });
-
-    if (isActivity !== undefined) {
-      queryBuilder.andWhere('activity.is_activity = :isActivity', {
-        isActivity,
-      });
-    }
 
     if (category) {
       queryBuilder.andWhere('activity.category = :category', { category });
@@ -47,6 +36,30 @@ export class ActivityService {
     queryBuilder.orderBy('activity.order', 'ASC');
 
     return await queryBuilder.getMany();
+  }
+
+  async findActivitiesByIsActivity(
+    planId: string,
+    dayId: string,
+    isActivity: boolean,
+  ) {
+    return await this.activityRepository.find({
+      where: {
+        day: { id: dayId, plan: { id: planId } },
+        is_activity: isActivity,
+      },
+      order: { order: 'ASC' },
+    });
+  }
+
+  async findActivitiesWithExpenses(planId: string, dayId: string) {
+    return await this.activityRepository.find({
+      where: {
+        day: { id: dayId, plan: { id: planId } },
+        activity_expenses: MoreThan(0),
+      },
+      order: { order: 'ASC' },
+    });
   }
 
   async findOne(planId: string, dayId: string, activityId: string) {

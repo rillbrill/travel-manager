@@ -21,20 +21,27 @@ export class ActivityController {
   findAll(
     @Param('planId') planId: string,
     @Param('dayId') dayId: string,
-    @Query('isActivity') isActivity?: string,
     @Query('category') category?: string,
   ) {
-    // isActivity가 제공된 경우 문자열을 boolean으로 변환, 제공되지 않으면 undefined
-    const isActivityBoolean =
-      isActivity === 'true' ? true : isActivity === 'false' ? false : undefined;
+    return this.activityService.findAll(planId, dayId, category);
+  }
 
-    // 쿼리 파라미터에 따른 활동 조회
-    return this.activityService.findAll(
-      planId,
-      dayId,
-      isActivityBoolean,
-      category,
-    );
+  // 일정 탭 조회
+  @Get('isActivity')
+  findActivities(
+    @Param('planId') planId: string,
+    @Param('dayId') dayId: string,
+  ) {
+    return this.activityService.findActivitiesByIsActivity(planId, dayId, true);
+  }
+
+  // 경비 탭 조회
+  @Get('expenses')
+  findActivitiesWithExpenses(
+    @Param('planId') planId: string,
+    @Param('dayId') dayId: string,
+  ) {
+    return this.activityService.findActivitiesWithExpenses(planId, dayId);
   }
 
   // 단일 조회
