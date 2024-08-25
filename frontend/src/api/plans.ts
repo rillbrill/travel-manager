@@ -1,3 +1,6 @@
+import axios from 'axios'
+
+import { Plan } from '@/models/plan.model'
 import {
   ActivitiesByDayResDto,
   ActivitiesByPlanResDto,
@@ -15,6 +18,9 @@ import {
 } from '@/types/plan'
 
 import { axiosRequestHandler } from './http'
+
+const BASE_URL: string =
+  import.meta.env.VITE_BE_BASE_URL || 'http://localhost:3333'
 
 export const plansApi = {
   addPlan: async (payload: AddPlanReqDto) => {
@@ -162,6 +168,15 @@ export const plansApi = {
       return { data, status }
     } catch (error) {
       console.error('Convert currency requeset failed', error)
+    }
+  },
+  fetchPlans: async (): Promise<Plan[]> => {
+    try {
+      const response = await axios.get<Plan[]>(`${BASE_URL}/api/plans`)
+      return response.data
+    } catch (error) {
+      console.error('Error fetching plans:', error)
+      return []
     }
   },
 }
