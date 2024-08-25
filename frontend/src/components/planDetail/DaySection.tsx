@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import React, { useState } from 'react'
 
 import { plansApi } from '@/api/plans'
 import { useModal } from '@/hooks/useModal'
@@ -10,7 +10,9 @@ import { calculateTotalExpense } from '@/utils/calculateTotalExpense'
 import { ActivityForm, ActivityList } from './activity'
 import DayHeader from './DayHeader'
 import DayTabs from './DayTabs'
+import ExpenseForm from './expense/ExpenseForm'
 import ExpenseTable from './expense/ExpenseTable'
+import useCalculateExpenses from './expense/UseCalculateExpenses' // Hook 임포트
 
 type Props = {
   planId: string
@@ -85,14 +87,23 @@ function DaySection({ planId, day, dayIndex, country }: Props) {
         />
 
         {/* content */}
-        {showForm && (
-          <ActivityForm
-            currentTab={currentTab}
-            isLoading={isPending}
-            handleCancel={closeForm}
-            handleSave={addActivity}
-          />
-        )}
+        {showForm &&
+          (currentTab === DaysTabEnum.Activity ? (
+            <ActivityForm
+              currentTab={currentTab}
+              isLoading={isPending}
+              handleCancel={closeForm}
+              handleSave={addActivity}
+            />
+          ) : currentTab === DaysTabEnum.Expense ? (
+            <ExpenseForm
+              handleAddExpense={(expenseName, krw) => {
+                // ExpenseForm에서 비용 처리 로직 추가
+                closeForm()
+              }}
+              handleCancel={closeForm}
+            />
+          ) : null)}
         {currentTab === DaysTabEnum.Activity && (
           <ActivityList
             activities={activitiesByDay}
@@ -101,7 +112,7 @@ function DaySection({ planId, day, dayIndex, country }: Props) {
           />
         )}
         {currentTab === DaysTabEnum.Expense && (
-          <ExpenseTable etcActivities={activitiesByDay} />
+          <ExpenseTable planId={planId} dayId={dayId} />
         )}
       </div>
     </div>
