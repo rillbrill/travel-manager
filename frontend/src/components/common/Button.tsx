@@ -14,6 +14,7 @@ type Props = {
 } & ButtonHTMLAttributes<HTMLButtonElement>
 
 function Button({
+  type = 'button',
   children,
   shape = 'button',
   label,
@@ -29,6 +30,7 @@ function Button({
     <div className={cn(['flex flex-col gap-y-2', isFull ? 'w-full' : 'w-fit'])}>
       {hasLabel && <span className="text-sm text-gray-500">{label}</span>}
       <button
+        type={type}
         className={cn([
           shape === 'input'
             ? 'w-full rounded-lg border border-gray-300 bg-white px-2 py-3 text-gray-400'

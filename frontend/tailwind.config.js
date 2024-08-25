@@ -73,6 +73,9 @@ export default {
           '-ms-overflow-style': 'none' /* IE and Edge */,
           'scrollbar-width': 'none' /* Firefox */,
         },
+        '.outline-button': {
+          '@apply border border-blue-500 bg-transparent text-blue-500': '',
+        },
       })
     ),
   ],

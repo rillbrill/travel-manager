@@ -65,7 +65,7 @@ function DaySection({ planId, day, dayIndex, country }: Props) {
   }
 
   return (
-    <div className="relative flex flex-col">
+    <div className="flex flex-col">
       {/* header */}
       <DayHeader
         dayIndex={dayIndex}

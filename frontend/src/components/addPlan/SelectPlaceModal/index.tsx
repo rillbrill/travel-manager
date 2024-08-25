@@ -62,7 +62,6 @@ function SelectPlaceModal({ closeModal, selectPlace }: Props) {
                   {elem.countryName} {elem.cityName}
                 </span>
                 <Button
-                  type="button"
                   className="border border-blue-500 bg-gray-50 px-3 py-1 text-sm text-blue-500"
                   onClick={() =>
                     selectPlace(`${elem.countryName} ${elem.cityName}`)
