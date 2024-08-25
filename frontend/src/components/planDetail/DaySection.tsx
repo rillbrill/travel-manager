@@ -58,7 +58,7 @@ function DaySection({ day, dayIndex, country }: Props) {
           />
         )}
         {currentTab === DaysTabEnum.Activity && (
-          <ActivityList activities={activities} dayId={id} />
+          <ActivityList activities={activities} />
         )}
         {currentTab === DaysTabEnum.Expense && <ExpenseTable />}
       </div>
