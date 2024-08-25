@@ -31,13 +31,13 @@ export const useAuthStore = createStoreWithMiddleware<
   (set) => ({
     isLoggedIn: false,
     authLogin: (tokenName: TTokenName, tokenValue: string) =>
-      set(({ isLoggedIn }) => {
-        isLoggedIn = true
+      set((state: TStoreState) => {
+        state.isLoggedIn = true
         setToken(tokenName, tokenValue)
       }),
     authLogout: (tokenName: TTokenName) =>
-      set(({ isLoggedIn }) => {
-        isLoggedIn = false
+      set((state: TStoreState) => {
+        state.isLoggedIn = false
         removeToken(tokenName)
       }),
   }),

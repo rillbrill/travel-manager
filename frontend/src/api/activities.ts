@@ -1,4 +1,4 @@
-import { Day, EditActivityReqDto, EditActivityResDto } from '@/types/plan'
+import { EditActivityReqDto, EditActivityResDto } from '@/types/plan'
 
 import { axiosRequestHandler } from './http'
 
