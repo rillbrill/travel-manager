@@ -53,13 +53,13 @@ function DateRangePicker({
         onChange={handleDateChange}
         renderCustomHeader={({ date, increaseMonth, decreaseMonth }) => (
           <div className="flex items-center justify-around font-sans">
-            <button type="button" onClick={decreaseMonth}>
+            <button onClick={decreaseMonth}>
               <FiChevronLeft className="text-lg text-gray-600" />
             </button>
             <span className="text-base font-bold text-gray-800">
               {formatDate(DateFormatTypeEnum.YearAndMonth, date)}
             </span>
-            <button type="button" onClick={increaseMonth}>
+            <button onClick={increaseMonth}>
               <FiChevronRight className="text-lg text-gray-600" />
             </button>
           </div>

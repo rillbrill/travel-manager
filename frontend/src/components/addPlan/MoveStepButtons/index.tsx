@@ -39,12 +39,7 @@ function MoveStepButtons({
       ])}
     >
       {hasOneButton && (
-        <Button
-          type="button"
-          isFull
-          isDisabled={!isValid}
-          onClick={moveToNextStep}
-        >
+        <Button isFull isDisabled={!isValid} onClick={moveToNextStep}>
           <span className="text-sm">다음 단계로</span>
           <FiChevronRight className="text-lg" />
         </Button>
@@ -52,8 +47,7 @@ function MoveStepButtons({
       {hasTwoButtons && (
         <>
           <Button
-            type="button"
-            className="border border-blue-500 bg-transparent text-gray-800"
+            className="text-gray-800 outline-button"
             onClick={moveToPrevStep}
           >
             <FiChevronLeft className="text-lg text-blue-500" />
@@ -61,7 +55,6 @@ function MoveStepButtons({
           </Button>
           {isLastStep ? (
             <Button
-              type="button"
               isLoading={isLoading}
               isDisabled={!isValid}
               onClick={handleSubmit}
@@ -70,11 +63,7 @@ function MoveStepButtons({
               <FiChevronRight className="text-lg" />
             </Button>
           ) : (
-            <Button
-              type="button"
-              isDisabled={!isValid}
-              onClick={moveToNextStep}
-            >
+            <Button isDisabled={!isValid} onClick={moveToNextStep}>
               <span className="text-sm">다음 단계로</span>
               <FiChevronRight className="text-lg" />
             </Button>

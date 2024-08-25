@@ -52,8 +52,7 @@ function SetPlaceAndDateForm() {
               <div className="flex w-full items-center justify-between gap-x-3 pr-6">
                 <p>{planCountry}</p>
                 <Button
-                  type="button"
-                  className="rounded-[4px] border border-blue-500 bg-transparent px-3 py-1 text-sm text-blue-500"
+                  className="rounded-[4px] px-3 py-1 text-sm outline-button"
                   onClick={openModal}
                 >
                   수정하기
@@ -61,7 +60,6 @@ function SetPlaceAndDateForm() {
               </div>
             ) : (
               <Button
-                type="button"
                 shape="input"
                 className="border-blue-500 text-blue-500"
                 isFull

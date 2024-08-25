@@ -64,6 +64,34 @@ export type Currency = {
   value: number
 }
 
+export type SameName = {
+  region: string[]
+  keyword: string
+  selectedRegion: string
+}
+
+export type Meta = {
+  totalCount: number
+  pageableCount: number
+  isEnd: boolean
+  sameName: SameName
+}
+
+export type Document = {
+  id: string
+  placeName: string
+  categoryName: string
+  categoryGroupCode: string
+  categoryGroupName: string
+  phone: string
+  addressName: string
+  roadAddressName: string
+  x: string
+  y: string
+  placeUrl: string
+  distance: string
+}
+
 export type AddPlanReqDto = Omit<Plan, 'id' | 'totalExpenses'>
 
 export type AddPlanResDto = Plan
@@ -113,4 +141,9 @@ export type ConvertCurrencyReqDto = {
 export type ConvertCurrencyResDto = {
   original: Currency
   converted: Currency
+}
+
+export type LocalSearchKeywordResDto = {
+  meta: Meta
+  documents: Document[]
 }

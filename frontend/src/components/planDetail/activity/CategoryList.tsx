@@ -30,8 +30,8 @@ function CategoryList({ currentTab, selectedCategory, onClick }: Props) {
     <div className="flex w-full flex-wrap items-center gap-1">
       {categories.map((category) => (
         <button
-          key={category.name}
           type="button"
+          key={category.name}
           className={cn([
             'rounded-md px-2 py-1 text-center text-xs',
             category.color,
