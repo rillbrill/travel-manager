@@ -35,7 +35,7 @@ export class ActivityService {
       .andWhere('plan.id = :planId', { planId });
 
     if (isActivity !== undefined) {
-      queryBuilder.andWhere('activity.isActivity = :isActivity', {
+      queryBuilder.andWhere('activity.is_activity = :isActivity', {
         isActivity,
       });
     }
@@ -97,7 +97,7 @@ export class ActivityService {
     const dayActivity = this.activityRepository.create({
       ...createDayActivityDto,
       day: { id: dayId, plan: { id: planId } },
-      isActivity: isActivity,
+      is_activity: isActivity,
       order: newOrder,
     });
 
