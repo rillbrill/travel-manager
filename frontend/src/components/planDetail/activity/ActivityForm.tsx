@@ -1,5 +1,4 @@
 import { useMemo, useState } from 'react'
-import { useForm } from 'react-hook-form'
 
 import { Button, Field, Input } from '@/components/common'
 import { errorMessages } from '@/constants/errorMessage'
@@ -36,20 +35,14 @@ function ActivityForm({
   const [activityPayload, setActivityPayload] = useState<AddActivityReqDto>(
     defaultValues || initialValues
   )
-  const {
-    register,
-    formState: { isDirty },
-  } = useForm<Partial<AddActivityReqDto>>({
-    mode: 'onChange',
-  })
 
   const isValid = useMemo(() => {
     const commonValidation =
       !!activityPayload.activityName &&
       activityPayload.activityName.length <= 15 &&
       !!activityPayload.category
-    return defaultValues ? commonValidation : commonValidation && isDirty
-  }, [activityPayload.activityName, activityPayload.category, isDirty])
+    return defaultValues ? commonValidation : commonValidation
+  }, [activityPayload.activityName, activityPayload.category])
   const updatePayload = (value: Partial<AddActivityReqDto>) => {
     setActivityPayload({
       ...activityPayload,
@@ -74,7 +67,6 @@ function ActivityForm({
         name="활동명"
         value={
           <Input
-            {...register('activityName')}
             type="text"
             value={activityPayload.activityName}
             onChange={(e) => updatePayload({ activityName: e.target.value })}
@@ -104,14 +96,23 @@ function ActivityForm({
         name="메모"
         value={
           <textarea
-            {...register('detail')}
             value={activityPayload.detail || ''}
             onChange={(e) => updatePayload({ detail: e.target.value })}
             className="w-full rounded-md border border-gray-300 p-2 text-sm"
           />
         }
       />
-      <Field name="경비" value={<ExpenseInput />} />
+      <Field
+        name="경비"
+        value={
+          <ExpenseInput
+            value={activityPayload.activityExpenses?.toString()}
+            onChange={(e) =>
+              updatePayload({ activityExpenses: Number(e.target.value) })
+            }
+          />
+        }
+      />
 
       <div className="mt-2 flex items-center gap-x-3">
         <Button
