@@ -1,4 +1,4 @@
-import { EditActivityReqDto, EditActivityResDto } from '@/types/plan'
+import { Day, EditActivityReqDto, EditActivityResDto } from '@/types/plan'
 
 import { axiosRequestHandler } from './http'
 
@@ -37,5 +37,23 @@ export const updateActivity = async (
     return { data, status }
   } catch (error) {
     console.error('Error updating activity:', error)
+  }
+}
+
+export const getDayActivities = async (planId: string, dayId: string) => {
+  try {
+    const { data, status } = await axiosRequestHandler<Day>({
+      method: 'get',
+      url: `/api/plans/${planId}/days/${dayId}/activities`,
+    })
+
+    if (status === 200) {
+      return data
+    } else {
+      throw new Error('Failed to fetch activities')
+    }
+  } catch (error) {
+    console.error('Error fetching day activities:', error)
+    throw error
   }
 }
