@@ -103,7 +103,7 @@ function ActivityForm({
         }
       />
       <Field
-        name="경비"
+        name="경비 (KRW)"
         value={
           <ExpenseInput
             value={activityPayload.activityExpenses || ''}
@@ -116,15 +116,13 @@ function ActivityForm({
 
       <div className="mt-2 flex items-center gap-x-3">
         <Button
-          type="button"
-          className="border border-blue-500 bg-transparent px-0 py-2 text-sm text-blue-500"
+          className="px-0 py-2 text-sm text-blue-500 outline-button"
           isFull
           onClick={handleCancel}
         >
           취소
         </Button>
         <Button
-          type="button"
           isDisabled={!isValid}
           isLoading={isLoading}
           className={cn([
