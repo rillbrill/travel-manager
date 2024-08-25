@@ -1,8 +1,11 @@
+import { useState } from 'react'
 import { FiEdit3 } from 'react-icons/fi'
 import { RiDeleteBin6Line } from 'react-icons/ri'
 
 import { deleteActivity, updateActivity } from '@/api/activities'
 import { plansApi } from '@/api/plans'
+import { SvgLoadingSpinner } from '@/components/common'
+import { usePending } from '@/hooks/usePending'
 import { useActivityStore } from '@/store/activity'
 import { HttpStatusCodeEnum } from '@/types'
 import { Activity, DaysTabEnum, EditActivityReqDto } from '@/types/plan'
@@ -18,6 +21,9 @@ type Props = {
 }
 
 function ActivityItem({ activity, planId, dayId, setActivitiesByDay }: Props) {
+  const { isPending, toggleIsPending } = usePending()
+  const [isDelete, setIsDelete] = useState<boolean>()
+
   const {
     activity: editingItem,
     editingActivityId,
@@ -39,12 +45,14 @@ function ActivityItem({ activity, planId, dayId, setActivitiesByDay }: Props) {
   }
 
   const handleSaveClick = async (payload: EditActivityReqDto) => {
+    toggleIsPending(true)
     if (planId && dayId && activityId) {
       const response = await updateActivity(planId, dayId, activityId, payload)
       if (response?.status === HttpStatusCodeEnum.OK) {
         const updatedRes = await plansApi.getActivitiesByDay(planId, dayId)
         if (updatedRes?.status === HttpStatusCodeEnum.OK) {
           setActivitiesByDay(updatedRes.data)
+          toggleIsPending(false)
         }
       }
     }
@@ -55,14 +63,16 @@ function ActivityItem({ activity, planId, dayId, setActivitiesByDay }: Props) {
     setEditingActivityId('')
   }
   const handleDeleteClick = async () => {
-    console.log('delete' + planId)
-
+    setIsDelete(true)
+    toggleIsPending(true)
     if (planId && dayId && activityId) {
       const response = await deleteActivity(planId, dayId, activityId)
       if (response?.status === HttpStatusCodeEnum.OK) {
         const updatedRes = await plansApi.getActivitiesByDay(planId, dayId)
         if (updatedRes?.status === HttpStatusCodeEnum.OK) {
           setActivitiesByDay(updatedRes.data)
+          toggleIsPending(false)
+          setIsDelete(false)
         }
       }
     }
@@ -75,12 +85,17 @@ function ActivityItem({ activity, planId, dayId, setActivitiesByDay }: Props) {
           <FiEdit3 />
         </button>
         <button onClick={handleDeleteClick}>
-          <RiDeleteBin6Line />
+          {isDelete && isPending ? (
+            <SvgLoadingSpinner className="size-4 text-gray-300" />
+          ) : (
+            <RiDeleteBin6Line />
+          )}
         </button>
       </div>
 
       {editingActivityId === activity.id ? (
         <ActivityForm
+          isLoading={isPending}
           currentTab={DaysTabEnum.Activity}
           defaultValues={editingItem}
           handleCancel={handleCancelClick}
