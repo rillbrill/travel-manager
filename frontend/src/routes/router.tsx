@@ -35,7 +35,7 @@ const router = createBrowserRouter([
         element: <AddPlanPage />,
       },
       {
-        path: routes.plan,
+        path: `${routes.plans}/:planId`,
         element: <PlanDetailPage />,
       },
       {

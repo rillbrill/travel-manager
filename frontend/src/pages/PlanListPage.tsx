@@ -62,7 +62,7 @@ function PlanListPage() {
                   </span>
                 </div>
               )}
-              <Link to={routes.plan}>
+              <Link to={`${routes.plans}/${plan.id}`}>
                 <h2 className="mb-1.5 text-base font-semibold">
                   {plan.plan_name}
                 </h2>
