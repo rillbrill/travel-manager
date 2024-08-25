@@ -81,7 +81,7 @@ export const plansApi = {
       const { data, status } = await axiosRequestHandler<ActivitiesByDayResDto>(
         {
           method: 'get',
-          url: `/api/plans/${planId}/days/${dayId}/activities`,
+          url: `/api/plans/${planId}/days/${dayId}/activities/isActivity`,
         }
       )
 
@@ -90,12 +90,12 @@ export const plansApi = {
       console.error('Get plan by id request failed', error)
     }
   },
-  getEtcActivitiesByDay: async (planId: string, dayId: string) => {
+  getExpensesByDay: async (planId: string, dayId: string) => {
     try {
       const { data, status } = await axiosRequestHandler<ActivitiesByDayResDto>(
         {
           method: 'get',
-          url: `/api/plans/${planId}/days/${dayId}/activities?isActivity=false`,
+          url: `/api/plans/${planId}/days/${dayId}/activities/expenses`,
         }
       )
 
@@ -124,7 +124,7 @@ export const plansApi = {
       console.error('Add activity request failed', error)
     }
   },
-  addEtcActivity: async (
+  addExpense: async (
     planId: string,
     dayId: string,
     payload: AddEtcActivityReqDto
