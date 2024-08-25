@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 
-import { Activity } from '@/types/plan'
+import { Activity, EditActivityReqDto } from '@/types/plan'
 
 const initialState: Activity = {
   id: '',
@@ -14,9 +14,9 @@ const initialState: Activity = {
 }
 
 type ActivityStore = {
-  activity: Activity
+  activity: EditActivityReqDto
   editingActivityId: string
-  setActivity: (activity: Activity) => void
+  setActivity: (activity: EditActivityReqDto) => void
   setEditingActivityId: (id: string) => void
 }
 
