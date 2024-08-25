@@ -13,7 +13,8 @@ function ShowActivity({ activity }: Props) {
   const categoryColor = dayCategories.find(
     (category) => category.name === activity.category
   )?.color
-
+  const [placeName, roadAddressName] =
+    activity.activityLocation?.split('/') || []
   const style = 'inline-block min-w-20 text-nowrap text-sm text-gray-500'
 
   return (
@@ -32,17 +33,53 @@ function ShowActivity({ activity }: Props) {
         <div className={style}>활동명</div>
         <div>{activity.activityName}</div>
       </div>
+      {/* {placeName ? (
+        <div className="mb-3 flex">
+          <div className={style}>장소</div>
+          <div>{placeName}</div>
+        </div>
+      ) : (
+        <></>
+      )}
+      {roadAddressName ? (
+        <div className="mb-3 flex">
+          <div className={style}>주소</div>
+          <div>{roadAddressName}</div>
+        </div>
+      ) : (
+        <></>
+      )}
+      {activity.detail ? (
+        <div className="mb-3 flex">
+          <div className={style}>메모</div>
+          <div>{activity.detail}</div>
+        </div>
+      ) : (
+        <></>
+      )}
+      {activity.activityExpenses ? (
+        <div className="flex">
+          <div className={style}>경비</div>
+          <div>{activity.activityExpenses}</div>
+        </div>
+      ) : (
+        <></>
+      )} */}
       <div className="mb-3 flex">
         <div className={style}>장소</div>
-        <div>{activity.activityLocation}</div>
+        <div>{placeName || '-'}</div>
+      </div>
+      <div className="mb-3 flex">
+        <div className={style}>주소</div>
+        <div>{roadAddressName || '-'}</div>
       </div>
       <div className="mb-3 flex">
         <div className={style}>메모</div>
-        <div>{activity.detail}</div>
+        <div>{activity.detail || ''}</div>
       </div>
       <div className="flex">
         <div className={style}>경비</div>
-        <div>{activity.activityExpenses}</div>
+        <div>{activity.activityExpenses || '-'}</div>
       </div>
     </div>
   )
