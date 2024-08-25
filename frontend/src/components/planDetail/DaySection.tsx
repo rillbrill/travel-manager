@@ -1,3 +1,4 @@
+import { DragDropContext, DropResult } from '@hello-pangea/dnd'
 import { useState } from 'react'
 
 import { plansApi } from '@/api/plans'
@@ -72,6 +73,30 @@ function DaySection({ planId, day, dayIndex, country }: Props) {
 
     closeForm()
   }
+  const handleDragEnd = async ({
+    destination,
+    source,
+    draggableId,
+  }: DropResult) => {
+    toggleIsPending(true)
+    const response = await plansApi.changeActivityOrder({
+      planId,
+      dayId,
+      activityId: draggableId,
+      order: destination!.index + 1 || source.index + 1,
+    })
+
+    if (response?.status === HttpStatusCodeEnum.OK) {
+      const updatedRes =
+        currentTab === DaysTabEnum.Activity
+          ? await plansApi.getActivitiesByDay(planId, dayId)
+          : await plansApi.getExpensesByDay(planId, dayId)
+      if (updatedRes?.status === HttpStatusCodeEnum.OK) {
+        setActivitiesByDay(updatedRes.data)
+        toggleIsPending(false)
+      }
+    }
+  }
 
   // useEffect(() => {
   //   const fetchData = async () => {
@@ -112,22 +137,24 @@ function DaySection({ planId, day, dayIndex, country }: Props) {
             handleSave={addActivity}
           />
         )}
-        {currentTab === DaysTabEnum.Activity && (
-          <ActivityList
-            activities={activitiesByDay}
-            setActivitiesByDay={setActivitiesByDay}
-            planId={planId}
-            dayId={dayId}
-          />
-        )}
-        {currentTab === DaysTabEnum.Expense && (
-          <ExpenseTable
-            planId={planId}
-            dayId={dayId}
-            activitiesByDay={activitiesByDay}
-            setActivitiesByDay={setActivitiesByDay}
-          />
-        )}
+        <DragDropContext onDragEnd={handleDragEnd}>
+          {currentTab === DaysTabEnum.Activity && (
+            <ActivityList
+              activities={activitiesByDay}
+              setActivitiesByDay={setActivitiesByDay}
+              planId={planId}
+              dayId={dayId}
+            />
+          )}
+          {currentTab === DaysTabEnum.Expense && (
+            <ExpenseTable
+              planId={planId}
+              dayId={dayId}
+              activitiesByDay={activitiesByDay}
+              setActivitiesByDay={setActivitiesByDay}
+            />
+          )}
+        </DragDropContext>
       </div>
     </div>
   )

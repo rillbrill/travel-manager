@@ -133,14 +133,6 @@ export type EditActivityReqDto = AddActivityReqDto
 
 export type EditActivityResDto = Activity
 
-export type OrderActivitiesReqDto = {
-  order: number
-}
-
-export type OrderActivitiesResDto = {
-  success: boolean
-}
-
 export type PlacesResDto = Place[]
 
 export type CountryCodeResDto = string
@@ -159,4 +151,15 @@ export type ConvertCurrencyResDto = {
 export type LocalSearchKeywordResDto = {
   meta: Meta
   documents: Document[]
+}
+
+export type ChangeActivityOrderReqDto = {
+  planId: string
+  dayId: string
+  activityId: string
+  order: number
+}
+
+export type ChangeActivityOrderResDto = {
+  success: boolean
 }
