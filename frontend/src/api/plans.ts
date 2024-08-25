@@ -10,6 +10,8 @@ import {
   AddEtcActivityResDto,
   AddPlanReqDto,
   AddPlanResDto,
+  ChangeActivityOrderReqDto,
+  ChangeActivityOrderResDto,
   ConvertCurrencyReqDto,
   ConvertCurrencyResDto,
   CountryCodeResDto,
@@ -122,6 +124,27 @@ export const plansApi = {
       return { data, status }
     } catch (error) {
       console.error('Add activity request failed', error)
+    }
+  },
+  changeActivityOrder: async ({
+    planId,
+    dayId,
+    activityId,
+    order,
+  }: ChangeActivityOrderReqDto) => {
+    try {
+      const { data, status } = await axiosRequestHandler<
+        ChangeActivityOrderResDto,
+        Pick<ChangeActivityOrderReqDto, 'order'>
+      >({
+        method: 'put',
+        url: `/api/plans/${planId}/days/${dayId}/activities/${activityId}/order`,
+        data: { order },
+      })
+
+      return { data, status }
+    } catch (error) {
+      console.error('Change activity order request failed', error)
     }
   },
   addExpense: async (

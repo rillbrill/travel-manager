@@ -1,3 +1,4 @@
+import { Droppable } from '@hello-pangea/dnd'
 import React, { Dispatch, SetStateAction } from 'react'
 
 import { Activity } from '@/types/plan'
@@ -49,17 +50,27 @@ const ExpenseTable: React.FC<ExpenseTableProps> = ({
           ))}
         </tbody>
       </table>
-      <div className="mt-2 flex flex-col gap-y-2 text-sm">
-        {activitiesByDay.map((activity) => (
-          <ActivityItem
-            key={activity.id}
-            planId={planId}
-            dayId={dayId}
-            activity={activity}
-            setActivitiesByDay={setActivitiesByDay}
-          />
-        ))}
-      </div>
+      <Droppable droppableId={dayId}>
+        {(provided) => (
+          <div
+            ref={provided.innerRef}
+            className="mt-2 flex flex-col gap-y-2 text-sm"
+            {...provided.droppableProps}
+          >
+            {activitiesByDay.map((activity, index) => (
+              <ActivityItem
+                key={activity.id}
+                index={index}
+                planId={planId}
+                dayId={dayId}
+                activity={activity}
+                setActivitiesByDay={setActivitiesByDay}
+              />
+            ))}
+            {provided.placeholder}
+          </div>
+        )}
+      </Droppable>
     </>
   )
 }

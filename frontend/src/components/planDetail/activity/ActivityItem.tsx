@@ -1,3 +1,4 @@
+import { Draggable } from '@hello-pangea/dnd'
 import { useState } from 'react'
 import { FiEdit3 } from 'react-icons/fi'
 import { RiDeleteBin6Line } from 'react-icons/ri'
@@ -14,13 +15,20 @@ import ActivityForm from './ActivityForm'
 import ShowActivity from './ShowActivity'
 
 type Props = {
+  index: number
   activity: Activity
   planId: string
   dayId: string
   setActivitiesByDay: (activities: Activity[]) => void
 }
 
-function ActivityItem({ activity, planId, dayId, setActivitiesByDay }: Props) {
+function ActivityItem({
+  index,
+  activity,
+  planId,
+  dayId,
+  setActivitiesByDay,
+}: Props) {
   const { isPending, toggleIsPending } = usePending()
   const [isDelete, setIsDelete] = useState<boolean>()
 
@@ -79,33 +87,42 @@ function ActivityItem({ activity, planId, dayId, setActivitiesByDay }: Props) {
   }
 
   return (
-    <div className="text-s mb-3 max-w-md rounded-lg bg-gray-50 p-4 shadow-container">
-      <div className="mb-2 flex justify-end space-x-2">
-        <button onClick={handleEditClick}>
-          <FiEdit3 />
-        </button>
-        <button onClick={handleDeleteClick}>
-          {isDelete && isPending ? (
-            <SvgLoadingSpinner className="size-4 text-gray-300" />
-          ) : (
-            <RiDeleteBin6Line />
-          )}
-        </button>
-      </div>
+    <Draggable draggableId={activity.id} index={index}>
+      {(provided) => (
+        <div
+          ref={provided.innerRef}
+          className="text-s mb-3 max-w-md rounded-lg bg-gray-50 p-4 shadow-container"
+          {...provided.dragHandleProps}
+          {...provided.draggableProps}
+        >
+          <div className="mb-2 flex justify-end space-x-2">
+            <button onClick={handleEditClick}>
+              <FiEdit3 />
+            </button>
+            <button onClick={handleDeleteClick}>
+              {isDelete && isPending ? (
+                <SvgLoadingSpinner className="size-4 text-gray-300" />
+              ) : (
+                <RiDeleteBin6Line />
+              )}
+            </button>
+          </div>
 
-      {editingActivityId === activity.id ? (
-        <ActivityForm
-          currentTab={DaysTabEnum.Activity}
-          defaultValues={editingItem}
-          isEditMode={true}
-          isLoading={isPending}
-          handleCancel={handleCancelClick}
-          handleSave={handleSaveClick}
-        />
-      ) : (
-        <ShowActivity activity={activity} />
+          {editingActivityId === activity.id ? (
+            <ActivityForm
+              currentTab={DaysTabEnum.Activity}
+              defaultValues={editingItem}
+              isEditMode={true}
+              isLoading={isPending}
+              handleCancel={handleCancelClick}
+              handleSave={handleSaveClick}
+            />
+          ) : (
+            <ShowActivity activity={activity} />
+          )}
+        </div>
       )}
-    </div>
+    </Draggable>
   )
 }
 

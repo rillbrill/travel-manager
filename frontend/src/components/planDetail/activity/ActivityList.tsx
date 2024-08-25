@@ -1,3 +1,5 @@
+import { Droppable } from '@hello-pangea/dnd'
+
 import { Activity } from '@/types/plan'
 
 import ActivityItem from './ActivityItem'
@@ -16,23 +18,33 @@ function ActivityList({
   setActivitiesByDay,
 }: Props) {
   return (
-    <div className="text-sm">
-      {activities.length === 0 ? (
-        <p className="my-4 text-center">등록된 일정이 없습니다.</p>
-      ) : (
-        <>
-          {activities.map((activity) => (
-            <ActivityItem
-              key={activity.id}
-              activity={activity}
-              planId={planId}
-              dayId={dayId}
-              setActivitiesByDay={setActivitiesByDay}
-            />
-          ))}
-        </>
+    <Droppable droppableId={dayId}>
+      {(provided) => (
+        <div
+          ref={provided.innerRef}
+          className="text-sm"
+          {...provided.droppableProps}
+        >
+          {activities.length === 0 ? (
+            <p className="my-4 text-center">등록된 일정이 없습니다.</p>
+          ) : (
+            <>
+              {activities.map((activity, index) => (
+                <ActivityItem
+                  key={activity.id}
+                  index={index}
+                  activity={activity}
+                  planId={planId}
+                  dayId={dayId}
+                  setActivitiesByDay={setActivitiesByDay}
+                />
+              ))}
+            </>
+          )}
+          {provided.placeholder}
+        </div>
       )}
-    </div>
+    </Droppable>
   )
 }
 
