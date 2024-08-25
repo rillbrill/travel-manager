@@ -4,7 +4,7 @@ import React, { Dispatch, SetStateAction } from 'react'
 import { Activity } from '@/types/plan'
 
 import { ActivityItem } from '../activity'
-import useCalculateExpenses from './UseCalculateExpenses'
+import UseCurruncy from './UseCurruncy'
 
 type ExpenseTableProps = {
   planId: string
@@ -19,7 +19,7 @@ const ExpenseTable: React.FC<ExpenseTableProps> = ({
   activitiesByDay,
   setActivitiesByDay,
 }) => {
-  const { expensesTable: expenses } = useCalculateExpenses(
+  const { countryCode, expensesTable: convertedExpenses } = UseCurruncy(
     planId,
     dayId,
     activitiesByDay
@@ -28,26 +28,39 @@ const ExpenseTable: React.FC<ExpenseTableProps> = ({
   // if (loading) return <div>Loading expenses...</div>
   // if (error) return <div>Error loading expenses: {error}</div>
 
+  const hasConvertedCost = countryCode !== 'KRW'
+
   return (
     <>
       <table className="mr-5">
         <thead>
           <tr className="text-right">
             <th className="pb-2"> </th>
-            <th className="pb-2">₩</th>
+            <th className="pb-2 text-sm">₩</th>
+            {hasConvertedCost && (
+              <th className="pb-2 text-sm">{countryCode}</th>
+            )}
           </tr>
         </thead>
         <tbody>
-          {expenses.map((expense) => (
-            <tr key={expense.category}>
-              <td className="py-1.5 text-left text-sm font-semibold">
-                {expense.category}
-              </td>
-              <td className="py-1.5 text-right text-sm">
-                {expense.totalCost.toLocaleString('ko-KR')}
-              </td>
-            </tr>
-          ))}
+          {convertedExpenses.map((convertedExpense) => {
+            return (
+              <tr key={convertedExpense.category}>
+                <td className="py-1.5 text-left text-sm font-semibold">
+                  {convertedExpense.category}
+                </td>
+                <td className="py-1.5 text-right text-sm">
+                  {convertedExpense.totalCost.toLocaleString('ko-KR')}
+                </td>
+                {hasConvertedCost && (
+                  <td className="py-1.5 text-right text-sm">
+                    {convertedExpense?.convertedCost?.toLocaleString('ko-KR') ||
+                      '-'}
+                  </td>
+                )}
+              </tr>
+            )
+          })}
         </tbody>
       </table>
       <Droppable droppableId={dayId}>
