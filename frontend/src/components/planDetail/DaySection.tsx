@@ -32,7 +32,16 @@ function DaySection({ planId, day, dayIndex, country }: Props) {
   const [activitiesByDay, setActivitiesByDay] = useState<Activity[]>(activities)
   const { isPending, toggleIsPending } = usePending()
 
-  const changeCurrentTab = (tab: DaysTabEnum) => {
+  const changeCurrentTab = async (tab: DaysTabEnum) => {
+    const response =
+      tab === DaysTabEnum.Activity
+        ? await plansApi.getActivitiesByDay(planId, dayId)
+        : await plansApi.getExpensesByDay(planId, dayId)
+
+    if (response?.status === HttpStatusCodeEnum.OK) {
+      setActivitiesByDay(response.data)
+      toggleIsPending(false)
+    }
     setCurrentTab(tab)
     closeForm()
   }
@@ -50,10 +59,10 @@ function DaySection({ planId, day, dayIndex, country }: Props) {
         }
       }
     } else {
-      const response = await plansApi.addActivity(planId, dayId, payload)
+      const response = await plansApi.addExpense(planId, dayId, payload)
       if (response?.status === HttpStatusCodeEnum.Created) {
         // update etc activity list
-        const updatedRes = await plansApi.getEtcActivitiesByDay(planId, dayId)
+        const updatedRes = await plansApi.getExpensesByDay(planId, dayId)
         if (updatedRes?.status === HttpStatusCodeEnum.OK) {
           setActivitiesByDay(updatedRes.data)
           toggleIsPending(false)
@@ -63,6 +72,16 @@ function DaySection({ planId, day, dayIndex, country }: Props) {
 
     closeForm()
   }
+
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     console.log('call', currentTab)
+  //     toggleIsPending(true)
+
+  //   }
+
+  //   fetchData()
+  // }, [currentTab])
 
   return (
     <div className="flex flex-col">
@@ -102,7 +121,12 @@ function DaySection({ planId, day, dayIndex, country }: Props) {
           />
         )}
         {currentTab === DaysTabEnum.Expense && (
-          <ExpenseTable planId={planId} dayId={dayId} />
+          <ExpenseTable
+            planId={planId}
+            dayId={dayId}
+            activitiesByDay={activitiesByDay}
+            setActivitiesByDay={setActivitiesByDay}
+          />
         )}
       </div>
     </div>
