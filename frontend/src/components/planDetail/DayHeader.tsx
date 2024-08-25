@@ -33,7 +33,7 @@ function DayHeader({ dayIndex, date, country, totalExpense }: Props) {
         <span className="text-sm text-gray-600">{country}</span>
       </div>
       <p className="text-right text-sm text-gray-600">
-        💰 예상 경비: {totalExpense.toLocaleString()}원
+        💰 일 예상 경비: {totalExpense.toLocaleString()}원
       </p>
     </div>
   )

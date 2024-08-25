@@ -1,6 +1,10 @@
 import { useState } from 'react'
 
-import { Day, DaysTabEnum } from '@/types/plan'
+import { plansApi } from '@/api/plans'
+import { usePending } from '@/hooks/usePending'
+import { HttpStatusCodeEnum } from '@/types'
+import { Activity, AddActivityReqDto, Day, DaysTabEnum } from '@/types/plan'
+import { calculateTotalExpense } from '@/utils/calculateTotalExpense'
 
 import { ActivityForm, ActivityList } from './activity'
 import DayHeader from './DayHeader'
@@ -8,17 +12,20 @@ import DayTabs from './DayTabs'
 import ExpenseTable from './expense/ExpenseTable'
 
 type Props = {
+  planId: string
   day: Day
   dayIndex: number
   country: string
 }
 
-function DaySection({ day, dayIndex, country }: Props) {
-  const { id, date, activities } = day
+function DaySection({ planId, day, dayIndex, country }: Props) {
+  const { id: dayId, date, activities } = day
   const [currentTab, setCurrentTab] = useState<DaysTabEnum>(
     DaysTabEnum.Activity
   )
   const [showForm, setShowForm] = useState<boolean>(false)
+  const [activitiesByDay, setActivitiesByDay] = useState<Activity[]>(activities)
+  const { isPending, toggleIsPending } = usePending()
 
   const changeCurrentTab = (tab: DaysTabEnum) => {
     setCurrentTab(tab)
@@ -30,6 +37,33 @@ function DaySection({ day, dayIndex, country }: Props) {
   const closeForm = () => {
     setShowForm(false)
   }
+  const addActivity = async (payload: AddActivityReqDto) => {
+    toggleIsPending(true)
+
+    if (currentTab === DaysTabEnum.Activity) {
+      const response = await plansApi.addActivity(planId, dayId, payload)
+      if (response?.status === HttpStatusCodeEnum.Created) {
+        // update activity list
+        const updatedRes = await plansApi.getActivitiesByDay(planId, dayId)
+        if (updatedRes?.status === HttpStatusCodeEnum.OK) {
+          setActivitiesByDay(updatedRes.data)
+          toggleIsPending(false)
+        }
+      }
+    } else {
+      const response = await plansApi.addActivity(planId, dayId, payload)
+      if (response?.status === HttpStatusCodeEnum.Created) {
+        // update etc activity list
+        const updatedRes = await plansApi.getEtcActivitiesByDay(planId, dayId)
+        if (updatedRes?.status === HttpStatusCodeEnum.OK) {
+          setActivitiesByDay(updatedRes.data)
+          toggleIsPending(false)
+        }
+      }
+    }
+
+    closeForm()
+  }
 
   return (
     <div className="relative flex flex-col">
@@ -38,7 +72,9 @@ function DaySection({ day, dayIndex, country }: Props) {
         dayIndex={dayIndex}
         date={date}
         country={country}
-        totalExpense={0}
+        totalExpense={calculateTotalExpense(
+          activitiesByDay.map((elem) => elem.activityExpenses || 0)
+        )}
       />
 
       <div className="ml-14 mt-3 flex flex-col gap-2">
@@ -53,14 +89,17 @@ function DaySection({ day, dayIndex, country }: Props) {
         {showForm && (
           <ActivityForm
             currentTab={currentTab}
+            isLoading={isPending}
             handleCancel={closeForm}
-            handleSave={() => {}}
+            handleSave={addActivity}
           />
         )}
         {currentTab === DaysTabEnum.Activity && (
-          <ActivityList activities={activities} />
+          <ActivityList activities={activitiesByDay} />
         )}
-        {currentTab === DaysTabEnum.Expense && <ExpenseTable />}
+        {currentTab === DaysTabEnum.Expense && (
+          <ExpenseTable etcActivities={activitiesByDay} />
+        )}
       </div>
     </div>
   )
