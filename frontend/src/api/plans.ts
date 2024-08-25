@@ -7,6 +7,9 @@ import {
   AddEtcActivityResDto,
   AddPlanReqDto,
   AddPlanResDto,
+  ConvertCurrencyReqDto,
+  ConvertCurrencyResDto,
+  CountryCodeResDto,
   PlacesResDto,
   PlanResDto,
 } from '@/types/plan'
@@ -133,6 +136,32 @@ export const plansApi = {
       return { data, status }
     } catch (error) {
       console.error('Add expense activity request failed', error)
+    }
+  },
+  getCountryCode: async (planId: string) => {
+    try {
+      const { data, status } = await axiosRequestHandler<CountryCodeResDto>({
+        method: 'get',
+        url: `/api/plans/${planId}/currency`,
+      })
+
+      return { data, status }
+    } catch (error) {
+      console.error('Get country code request failed', error)
+    }
+  },
+  convertCurrency: async ({ from, to, amount }: ConvertCurrencyReqDto) => {
+    try {
+      const { data, status } = await axiosRequestHandler<ConvertCurrencyResDto>(
+        {
+          method: 'get',
+          url: `/api/currency?from=${from}&to=${to}&amount=${amount}`,
+        }
+      )
+
+      return { data, status }
+    } catch (error) {
+      console.error('Convert currency requeset failed', error)
     }
   },
 }
