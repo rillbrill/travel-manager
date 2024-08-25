@@ -41,7 +41,7 @@ function PlanDetailPage() {
   }
 
   return (
-    <div className="relative flex w-full flex-col gap-y-4 px-3 py-2 pb-4">
+    <div className="flex w-full flex-col gap-y-4 px-3 py-2 pb-4">
       <div className="flex flex-col items-center gap-y-3">
         <h2 className="text-2xl font-bold">{plan.planName}</h2>
         <div className="flex items-center gap-x-2">

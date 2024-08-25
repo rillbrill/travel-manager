@@ -35,7 +35,6 @@ function ActivityForm({
   const [activityPayload, setActivityPayload] = useState<AddActivityReqDto>(
     defaultValues || initialValues
   )
-  console.log(activityPayload)
 
   const isValid = useMemo(() => {
     const commonValidation =
