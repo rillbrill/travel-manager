@@ -1,9 +1,4 @@
-// import LoadingSpinner from '@/components/common/LoadingSpinner'
-import { useEffect } from 'react'
-
 import { useKakaoLogin } from '@/hooks/useKakaoLogin'
-// import { IKakaoUserSuccess } from '@/model/kakao.model'
-// import {  IKakaoFail, IKakaoUserSuccess } from '@/model/kakao.model'
 
 function KakaoLoginPage() {
   const code = new URL(window.location.href).searchParams.get('code')!

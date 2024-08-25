@@ -13,8 +13,6 @@ const useCalculateExpenses = (
   activitiesByDay: Activity[]
 ) => {
   const [expensesTable, setExpensesTable] = useState<ExpenseTable[]>([])
-  const [loading, setLoading] = useState<boolean>(true)
-  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     // const fetchActivities = async () => {
@@ -75,7 +73,7 @@ const useCalculateExpenses = (
     setExpensesTable(expenseTable)
   }, [planId, dayId, activitiesByDay])
 
-  return { expensesTable, loading, error }
+  return { expensesTable }
 }
 
 export default useCalculateExpenses
