@@ -33,7 +33,7 @@ function ShowActivity({ activity }: Props) {
         <div className={style}>활동명</div>
         <div>{activity.activityName}</div>
       </div>
-      {placeName ? (
+      {/* {placeName ? (
         <div className="mb-3 flex">
           <div className={style}>장소</div>
           <div>{placeName}</div>
@@ -64,8 +64,8 @@ function ShowActivity({ activity }: Props) {
         </div>
       ) : (
         <></>
-      )}
-      {/* <div className="mb-3 flex">
+      )} */}
+      <div className="mb-3 flex">
         <div className={style}>장소</div>
         <div>{placeName || '-'}</div>
       </div>
@@ -80,7 +80,7 @@ function ShowActivity({ activity }: Props) {
       <div className="flex">
         <div className={style}>경비</div>
         <div>{activity.activityExpenses || '-'}</div>
-      </div> */}
+      </div>
     </div>
   )
 }
