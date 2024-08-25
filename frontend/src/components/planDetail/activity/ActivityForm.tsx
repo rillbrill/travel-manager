@@ -12,6 +12,7 @@ import LocationInput from './LocationInput'
 type Props = {
   currentTab: DaysTabEnum
   defaultValues?: AddActivityReqDto
+  isEditMode?: boolean
   isLoading?: boolean
   handleCancel: () => void
   handleSave: (payload: AddActivityReqDto) => void
@@ -29,6 +30,7 @@ function ActivityForm({
   currentTab,
   defaultValues,
   isLoading,
+  isEditMode,
   handleCancel,
   handleSave,
 }: Props) {
@@ -58,7 +60,7 @@ function ActivityForm({
   }
 
   return (
-    <form className="rounded-md border border-gray-300 p-4">
+    <form className={isEditMode ? '' : 'rounded-md border border-gray-300 p-4'}>
       <Field
         name="카테고리"
         value={

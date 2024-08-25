@@ -95,9 +95,10 @@ function ActivityItem({ activity, planId, dayId, setActivitiesByDay }: Props) {
 
       {editingActivityId === activity.id ? (
         <ActivityForm
-          isLoading={isPending}
           currentTab={DaysTabEnum.Activity}
           defaultValues={editingItem}
+          isEditMode={true}
+          isLoading={isPending}
           handleCancel={handleCancelClick}
           handleSave={handleSaveClick}
         />
