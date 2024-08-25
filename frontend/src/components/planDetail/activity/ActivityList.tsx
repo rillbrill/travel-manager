@@ -12,14 +12,20 @@ function ActivityList({ activities }: Props) {
   const [editingActivityId, setEditingActivityId] = useState('')
   return (
     <div className="text-sm">
-      {activities.map((activity) => (
-        <ActivityItem
-          key={activity.id}
-          activity={activity}
-          editingActivityId={editingActivityId}
-          setEditingActivityId={setEditingActivityId}
-        />
-      ))}
+      {activities.length === 0 ? (
+        <p className="my-4 text-center">등록된 일정이 없습니다.</p>
+      ) : (
+        <>
+          {activities.map((activity) => (
+            <ActivityItem
+              key={activity.id}
+              activity={activity}
+              editingActivityId={editingActivityId}
+              setEditingActivityId={setEditingActivityId}
+            />
+          ))}
+        </>
+      )}
     </div>
   )
 }

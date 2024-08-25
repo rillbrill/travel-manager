@@ -1,5 +1,4 @@
 import { useMemo, useState } from 'react'
-import { useForm } from 'react-hook-form'
 
 import { Button, Field, Input } from '@/components/common'
 import { errorMessages } from '@/constants/errorMessage'
@@ -13,6 +12,7 @@ import LocationInput from './LocationInput'
 type Props = {
   currentTab: DaysTabEnum
   defaultValues?: AddActivityReqDto
+  isLoading?: boolean
   handleCancel: () => void
   handleSave: (payload: AddActivityReqDto) => void
 }
@@ -28,27 +28,21 @@ const initialValues: AddActivityReqDto = {
 function ActivityForm({
   currentTab,
   defaultValues,
+  isLoading,
   handleCancel,
   handleSave,
 }: Props) {
   const [activityPayload, setActivityPayload] = useState<AddActivityReqDto>(
     defaultValues || initialValues
   )
-  const {
-    register,
-    formState: { errors, isDirty },
-  } = useForm<Partial<AddActivityReqDto>>({
-    defaultValues: defaultValues || initialValues,
-    mode: 'onChange',
-  })
 
-  const isValid = useMemo(
-    () =>
-      defaultValues
-        ? !errors.activityName && !!activityPayload.category
-        : !errors.activityName && !!activityPayload.category && isDirty,
-    [errors, activityPayload.category, isDirty]
-  )
+  const isValid = useMemo(() => {
+    const commonValidation =
+      !!activityPayload.activityName &&
+      activityPayload.activityName.length <= 15 &&
+      !!activityPayload.category
+    return defaultValues ? commonValidation : commonValidation
+  }, [activityPayload.activityName, activityPayload.category])
   const updatePayload = (value: Partial<AddActivityReqDto>) => {
     setActivityPayload({
       ...activityPayload,
@@ -73,26 +67,18 @@ function ActivityForm({
         name="활동명"
         value={
           <Input
-            {...register('activityName', {
-              required: {
-                value: true,
-                message: errorMessages.addActivity.nameRequired,
-              },
-              minLength: {
-                value: 1,
-                message: errorMessages.addActivity.nameRequired,
-              },
-              maxLength: {
-                value: 15,
-                message: errorMessages.addActivity.nameMaxLength,
-              },
-              value: activityPayload.activityName,
-              onChange: (e) => updatePayload({ activityName: e.target.value }),
-            })}
             type="text"
+            value={activityPayload.activityName}
+            onChange={(e) => updatePayload({ activityName: e.target.value })}
             className="p-2 text-sm"
             placeholder="활동명을 입력해주세요"
-            errorMessage={errors.activityName && errors.activityName.message}
+            errorMessage={
+              activityPayload.activityName.length < 1
+                ? errorMessages.addActivity.nameRequired
+                : activityPayload.activityName.length > 15
+                  ? errorMessages.addActivity.nameMaxLength
+                  : undefined
+            }
           />
         }
         isRequired
@@ -110,20 +96,29 @@ function ActivityForm({
         name="메모"
         value={
           <textarea
-            {...register('detail', {
-              value: activityPayload.detail,
-              onChange: (e) => updatePayload({ detail: e.target.value }),
-            })}
+            value={activityPayload.detail || ''}
+            onChange={(e) => updatePayload({ detail: e.target.value })}
             className="w-full rounded-md border border-gray-300 p-2 text-sm"
           />
         }
       />
-      <Field name="경비" value={<ExpenseInput />} />
+      <Field
+        name="경비"
+        value={
+          <ExpenseInput
+            value={activityPayload.activityExpenses?.toString()}
+            onChange={(e) =>
+              updatePayload({ activityExpenses: Number(e.target.value) })
+            }
+          />
+        }
+      />
 
       <div className="mt-2 flex items-center gap-x-3">
         <Button
           type="button"
           className="border border-blue-500 bg-transparent px-0 py-2 text-sm text-blue-500"
+          isFull
           onClick={handleCancel}
         >
           취소
@@ -131,10 +126,12 @@ function ActivityForm({
         <Button
           type="button"
           isDisabled={!isValid}
+          isLoading={isLoading}
           className={cn([
             isValid ? 'border border-blue-500' : 'border border-gray-400',
             'px-0 py-2 text-sm',
           ])}
+          isFull
           onClick={() => handleSave(activityPayload)}
         >
           저장

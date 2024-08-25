@@ -1,4 +1,15 @@
-import { AddPlanReqDto, AddPlanResDto, PlacesResDto } from '@/types/plan'
+import {
+  ActivitiesByDayResDto,
+  ActivitiesByPlanResDto,
+  AddActivityReqDto,
+  AddActivityResDto,
+  AddEtcActivityReqDto,
+  AddEtcActivityResDto,
+  AddPlanReqDto,
+  AddPlanResDto,
+  PlacesResDto,
+  PlanResDto,
+} from '@/types/plan'
 
 import { axiosRequestHandler } from './http'
 
@@ -29,6 +40,99 @@ export const plansApi = {
       return { data, status }
     } catch (error) {
       console.error('Get cities api request failed', error)
+    }
+  },
+  getPlanById: async (planId: string) => {
+    try {
+      const { data, status } = await axiosRequestHandler<PlanResDto>({
+        method: 'get',
+        url: `/api/plans/${planId}`,
+      })
+
+      return { data, status }
+    } catch (error) {
+      console.error('Get plan by id request failed', error)
+    }
+  },
+  getActivitiesByPlan: async (planId: string) => {
+    try {
+      const { data, status } =
+        await axiosRequestHandler<ActivitiesByPlanResDto>({
+          method: 'get',
+          url: `/api/plans/${planId}/all`,
+        })
+
+      return { data, status }
+    } catch (error) {
+      console.error('Get plan by id request failed', error)
+    }
+  },
+  getActivitiesByDay: async (planId: string, dayId: string) => {
+    try {
+      const { data, status } = await axiosRequestHandler<ActivitiesByDayResDto>(
+        {
+          method: 'get',
+          url: `/api/plans/${planId}/days/${dayId}/activities`,
+        }
+      )
+
+      return { data, status }
+    } catch (error) {
+      console.error('Get plan by id request failed', error)
+    }
+  },
+  getEtcActivitiesByDay: async (planId: string, dayId: string) => {
+    try {
+      const { data, status } = await axiosRequestHandler<ActivitiesByDayResDto>(
+        {
+          method: 'get',
+          url: `/api/plans/${planId}/days/${dayId}/activities?isActivity=false`,
+        }
+      )
+
+      return { data, status }
+    } catch (error) {
+      console.error('Get plan by id request failed', error)
+    }
+  },
+  addActivity: async (
+    planId: string,
+    dayId: string,
+    payload: AddActivityReqDto
+  ) => {
+    try {
+      const { data, status } = await axiosRequestHandler<
+        AddActivityResDto,
+        AddActivityReqDto
+      >({
+        method: 'post',
+        url: `/api/plans/${planId}/days/${dayId}/activities`,
+        data: payload,
+      })
+
+      return { data, status }
+    } catch (error) {
+      console.error('Add activity request failed', error)
+    }
+  },
+  addEtcActivity: async (
+    planId: string,
+    dayId: string,
+    payload: AddEtcActivityReqDto
+  ) => {
+    try {
+      const { data, status } = await axiosRequestHandler<
+        AddEtcActivityResDto,
+        AddEtcActivityReqDto
+      >({
+        method: 'post',
+        url: `/api/plans/${planId}/days/${dayId}/activities/expenses`,
+        data: payload,
+      })
+
+      return { data, status }
+    } catch (error) {
+      console.error('Add expense activity request failed', error)
     }
   },
 }

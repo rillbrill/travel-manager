@@ -29,8 +29,8 @@ export type Plan = {
 export type Activity = {
   id: string
   activityName: string
-  detail: string
-  activityLocation: string
+  detail: string | null
+  activityLocation: string | null
   activityExpenses: number | null
   category: string
   isActivity: boolean
@@ -53,6 +53,12 @@ export type Place = {
   countryName: string
 }
 
+export type ActivitiesByPlan = {
+  id: string
+  date: Date
+  activities: Activity[]
+}
+
 export type AddPlanReqDto = Omit<Plan, 'id' | 'totalExpenses'>
 
 export type AddPlanResDto = Plan
@@ -72,6 +78,8 @@ export type AddActivityResDto = Activity & {
 export type AddEtcActivityReqDto = AddActivityReqDto
 
 export type AddEtcActivityResDto = AddActivityResDto
+
+export type ActivitiesByPlanResDto = ActivitiesByPlan[]
 
 export type ActivitiesByDayResDto = Activity[]
 
